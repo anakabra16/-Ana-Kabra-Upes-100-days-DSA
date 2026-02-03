@@ -1,8 +1,23 @@
-n = int(input())          # total numbers supposed to be
-arr = list(map(int, input().split()))
+#include <stdio.h>
 
-total_sum = n * (n + 1) // 2
-array_sum = sum(arr)
+int main() {
+    int n;
+    scanf("%d", &n);
 
-missing = total_sum - array_sum
-print("Missing number is:", missing)
+    int arr[n-1];  
+    int sum = 0;
+
+    for(int i = 0; i < n-1; i++) {
+        scanf("%d", &arr[i]);
+        sum += arr[i];
+    }
+
+    int total = n * (n + 1) / 2;
+    int missing = total - sum;
+
+    printf("Missing number is: %d", missing);
+
+    return 0;
+}
+
+
