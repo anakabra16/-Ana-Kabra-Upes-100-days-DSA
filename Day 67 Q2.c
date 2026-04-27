@@ -1,56 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define MAX_COURSES 2005
-
-struct Node {
+typedef struct Node {
     int data;
     struct Node* next;
-};
+} Node;
 
-struct Node* adj[MAX_COURSES];
-int inDegree[MAX_COURSES];
-
-void addEdge(int u, int v) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = v;
-    newNode->next = adj[u];
-    adj[u] = newNode;
-    inDegree[v]++;
-}
-
-int main() {
-    int numCourses, prerequisitesLength;
-    if (scanf("%d %d", &numCourses, &prerequisitesLength) != 2) return 0;
-
-    for (int i = 0; i < numCourses; i++) {
-        adj[i] = NULL;
-        inDegree[i] = 0;
+int* findOrder(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize, int* returnSize) {
+    Node** adj = (Node**)calloc(numCourses, sizeof(Node*));
+    int* inDegree = (int*)calloc(numCourses, sizeof(int));
+    
+    for (int i = 0; i < prerequisitesSize; i++) {
+        int ai = prerequisites[i][0];
+        int bi = prerequisites[i][1];
+        Node* newNode = (Node*)malloc(sizeof(Node));
+        newNode->data = ai;
+        newNode->next = adj[bi];
+        adj[bi] = newNode;
+        inDegree[ai]++;
     }
-
-    for (int i = 0; i < prerequisitesLength; i++) {
-        int ai, bi;
-        scanf("%d %d", &ai, &bi);
-        // bi must be taken before ai -> directed edge from bi to ai
-        addEdge(bi, ai);
-    }
-
-    int queue[MAX_COURSES];
+    
+    int* queue = (int*)malloc(numCourses * sizeof(int));
     int front = 0, rear = 0;
-    int order[MAX_COURSES];
-    int count = 0;
-
+    
     for (int i = 0; i < numCourses; i++) {
         if (inDegree[i] == 0) {
             queue[rear++] = i;
         }
     }
-
+    
+    int count = 0;
+    int* order = (int*)malloc(numCourses * sizeof(int));
+    
     while (front < rear) {
         int curr = queue[front++];
         order[count++] = curr;
-
-        struct Node* temp = adj[curr];
+        
+        Node* temp = adj[curr];
         while (temp != NULL) {
             int neighbor = temp->data;
             inDegree[neighbor]--;
@@ -60,18 +47,17 @@ int main() {
             temp = temp->next;
         }
     }
-
-    // If we could topologically sort all courses, print the order
+    
+    free(adj);
+    free(inDegree);
+    free(queue);
+    
     if (count == numCourses) {
-        printf("[");
-        for (int i = 0; i < numCourses; i++) {
-            printf("%d%s", order[i], (i == numCourses - 1) ? "" : ",");
-        }
-        printf("]\n");
+        *returnSize = numCourses;
+        return order;
     } else {
-        // Else, it's impossible (cycle exists), return empty array
-        printf("[]\n");
+        free(order);
+        *returnSize = 0;
+        return NULL;
     }
-
-    return 0;
 }
