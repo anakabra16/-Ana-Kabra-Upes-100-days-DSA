@@ -1,32 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define MAX 100001
+/* 
+  GeeksforGeeks already defines struct Node and addEdge behind the scenes:
+  struct Node {
+      int data;
+      struct Node* next;
+  };
+*/
 
-// Adjacency list using linked list
-struct Node {
-    int data;
-    struct Node* next;
-};
-
-struct Node* adj[MAX];
-int visited[MAX];
-
-// Add edge to adjacency list
-void addEdge(int u, int v) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = v;
-    newNode->next = adj[u];
-    adj[u] = newNode;
-
-    newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = u;
-    newNode->next = adj[v];
-    adj[v] = newNode;
-}
-
-// DFS with parent tracking to detect cycle
-int dfs(int node, int parent) {
+bool dfs(int node, int parent, int* visited, struct Node* adj[]) {
     visited[node] = 1;
 
     struct Node* temp = adj[node];
@@ -34,49 +18,32 @@ int dfs(int node, int parent) {
         int neighbor = temp->data;
 
         if (!visited[neighbor]) {
-            if (dfs(neighbor, node))
-                return 1;
+            if (dfs(neighbor, node, visited, adj))
+                return true;
         } else if (neighbor != parent) {
-            return 1;
+            // If an adjacent node is visited and not the parent, there's a cycle
+            return true;
         }
 
         temp = temp->next;
     }
-    return 0;
+    return false;
 }
 
-int main() {
-    int V, E;
-    scanf("%d %d", &V, &E);
-
-    // Initialize adjacency list
-    for (int i = 0; i < V; i++) {
-        adj[i] = NULL;
-        visited[i] = 0;
-    }
-
-    // Read edges
-    for (int i = 0; i < E; i++) {
-        int u, v;
-        scanf("%d %d", &u, &v);
-        addEdge(u, v);
-    }
-
-    // Check all components for cycle
-    int hasCycle = 0;
+// Function to detect cycle in an undirected graph
+bool isCycle(int V, struct Node* adj[]) {
+    int* visited = (int*)calloc(V, sizeof(int));
+    
+    // Check all components
     for (int i = 0; i < V; i++) {
         if (!visited[i]) {
-            if (dfs(i, -1)) {
-                hasCycle = 1;
-                break;
+            if (dfs(i, -1, visited, adj)) {
+                free(visited);
+                return true;
             }
         }
     }
-
-    if (hasCycle)
-        printf("true");
-    else
-        printf("false");
-
-    return 0;
+    
+    free(visited);
+    return false;
 }
