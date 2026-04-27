@@ -1,36 +1,28 @@
-#include<stdio.h>
-int main(){
-    int n,pos,x;
-    scanf("%d", &n);
-    int arr[100];
+#include <stdio.h>
 
-    for (int i=0 ; i < n ; i++){
-        scanf("%d",&arr[i]);
-    }
-    printf("enter position to delete (1 to %d): ", n );
-    scanf("%d",&pos);
+int main() {
+  int n;
+  scanf("%d", &n);
 
-    if (pos < 1 || pos > n)
-{
-        printf("invalid pos");
-    }
-    else{
-        for (int i = pos - 1 ; i < n - 1 ; i++ ){
-            arr[i] = arr[i+1];
+  int arr[n];
 
-        }
-        n--;
-        printf("array after deletion:\n" );
-            for (int i=0 ; i < n ; i++){
-        printf("%d",&arr[i]);
+  // input array
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &arr[i]);
+  }
 
+  int pos;
+  scanf("%d", &pos);
 
-    
-    }
-    return 0;
-}
+  // shift elements to the left
+  for (int i = pos - 1; i < n - 1; i++) {
+    arr[i] = arr[i + 1];
+  }
 
+  // print updated array (size n-1)
+  for (int i = 0; i < n - 1; i++) {
+    printf("%d ", arr[i]);
+  }
 
-
-    
+  return 0;
 }

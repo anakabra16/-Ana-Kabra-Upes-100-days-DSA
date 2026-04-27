@@ -1,36 +1,39 @@
 #include <stdio.h>
 
 int main() {
-    int n, k;
-    scanf("%d", &n);
+  int n;
+  scanf("%d", &n);
 
-    int arr[n];
+  int arr[n];
 
-    // input array
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
+  // input array
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &arr[i]);
+  }
+
+  int k;
+  scanf("%d", &k);
+
+  int comparisons = 0;
+  int foundIndex = -1;
+
+  // linear search
+  for (int i = 0; i < n; i++) {
+    comparisons++;
+    if (arr[i] == k) {
+      foundIndex = i;
+      break;
     }
+  }
 
-    // input key
-    scanf("%d", &k);
+  // output
+  if (foundIndex != -1) {
+    printf("Found at index %d\n", foundIndex);
+  } else {
+    printf("Not Found\n");
+  }
 
-    int comparisons = 0;
-    int found = 0;
+  printf("Comparisons = %d\n", comparisons);
 
-    for(int i = 0; i < n; i++) {
-        comparisons++;           // one comparison
-        if(arr[i] == k) {
-            printf("Found at index %d\n", i);
-            found = 1;
-            break;               // stop searching
-        }
-    }
-
-    if(found == 0) {
-        printf("Not Found\n");
-    }
-
-    printf("Comparisons = %d", comparisons);
-
-    return 0;
+  return 0;
 }
