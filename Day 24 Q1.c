@@ -2,65 +2,82 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node* next;
+  int data;
+  struct Node *next;
 };
 
-struct Node* newNode(int x) {
-    struct Node* t = malloc(sizeof(struct Node));
-    t->data = x;
-    t->next = NULL;
-    return t;
+// create list
+struct Node *createList(int n) {
+  struct Node *head = NULL, *temp = NULL, *newNode;
+
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
+
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      temp = newNode;
+    }
+  }
+
+  return head;
 }
 
-struct Node* insert(struct Node* h, int x) {
-    if (!h) return newNode(x);
-    struct Node* p = h;
-    while (p->next) p = p->next;
-    p->next = newNode(x);
-    return h;
-}
+// delete first occurrence of key
+struct Node *deleteKey(struct Node *head, int key) {
 
-struct Node* deleteKey(struct Node* head, int key) {
-    if (!head) return head;
-
-    if (head->data == key) {
-        struct Node* t = head;
-        head = head->next;
-        free(t);
-        return head;
-    }
-
-    struct Node* p = head;
-    while (p->next && p->next->data != key)
-        p = p->next;
-
-    if (p->next) {
-        struct Node* t = p->next;
-        p->next = t->next;
-        free(t);
-    }
+  // case 1: head is the key
+  if (head != NULL && head->data == key) {
+    struct Node *temp = head;
+    head = head->next;
+    free(temp);
     return head;
+  }
+
+  struct Node *curr = head;
+  struct Node *prev = NULL;
+
+  while (curr != NULL && curr->data != key) {
+    prev = curr;
+    curr = curr->next;
+  }
+
+  // key found
+  if (curr != NULL) {
+    prev->next = curr->next;
+    free(curr);
+  }
+
+  return head;
 }
 
-void print(struct Node* h) {
-    while (h) {
-        printf("%d ", h->data);
-        h = h->next;
-    }
+// print list
+void printList(struct Node *head) {
+  while (head != NULL) {
+    printf("%d ", head->data);
+    head = head->next;
+  }
 }
 
 int main() {
-    int n, x, key;
-    struct Node* head = NULL;
+  int n;
+  scanf("%d", &n);
 
-    scanf("%d", &n);
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        head = insert(head, x);
-    }
+  struct Node *head = createList(n);
 
-    scanf("%d", &key);
-    head = deleteKey(head, key);
-    print(head);
+  int key;
+  scanf("%d", &key);
+
+  head = deleteKey(head, key);
+
+  printList(head);
+
+  return 0;
 }

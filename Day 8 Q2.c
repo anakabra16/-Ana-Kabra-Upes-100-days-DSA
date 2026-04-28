@@ -1,18 +1,10 @@
-#include <stdio.h>
+bool isPowerOfTwo(int n) {
+  if (n <= 0)
+    return false;
 
-int isPowerOfTwo(int n) {
-    if (n <= 0) return 0;
-    return (n & (n - 1)) == 0;
-}
+  while (n % 2 == 0) {
+    n = n / 2;
+  }
 
-int main() {
-    int n;
-    scanf("%d", &n);
-
-    if (isPowerOfTwo(n))
-        printf("Yes");
-    else
-        printf("No");
-
-    return 0;
+  return (n == 1);
 }

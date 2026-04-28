@@ -1,40 +1,46 @@
-#include <stdio.h>
+int *spiralOrder(int **matrix, int matrixSize, int *matrixColSize,
+                 int *returnSize) {
 
-int main() {
-    int m, n;
-    scanf("%d %d", &m, &n);
+  int m = matrixSize;
+  int n = matrixColSize[0];
 
-    int a[100][100];
+  int *result = (int *)malloc(sizeof(int) * (m * n));
+  int k = 0;
 
-    for (int i = 0; i < m; i++)
-        for (int j = 0; j < n; j++)
-            scanf("%d", &a[i][j]);
+  int top = 0, bottom = m - 1;
+  int left = 0, right = n - 1;
 
-    int top = 0, bottom = m - 1;
-    int left = 0, right = n - 1;
+  while (top <= bottom && left <= right) {
 
-    while (top <= bottom && left <= right) {
+    // 1. left → right
+    for (int i = left; i <= right; i++) {
+      result[k++] = matrix[top][i];
+    }
+    top++;
 
-        for (int j = left; j <= right; j++)
-            printf("%d ", a[top][j]);
-        top++;
+    // 2. top → bottom
+    for (int i = top; i <= bottom; i++) {
+      result[k++] = matrix[i][right];
+    }
+    right--;
 
-        for (int i = top; i <= bottom; i++)
-            printf("%d ", a[i][right]);
-        right--;
-
-        if (top <= bottom) {
-            for (int j = right; j >= left; j--)
-                printf("%d ", a[bottom][j]);
-            bottom--;
-        }
-
-        if (left <= right) {
-            for (int i = bottom; i >= top; i--)
-                printf("%d ", a[i][left]);
-            left++;
-        }
+    // 3. right → left
+    if (top <= bottom) {
+      for (int i = right; i >= left; i--) {
+        result[k++] = matrix[bottom][i];
+      }
+      bottom--;
     }
 
-    return 0;
+    // 4. bottom → top
+    if (left <= right) {
+      for (int i = bottom; i >= top; i--) {
+        result[k++] = matrix[i][left];
+      }
+      left++;
+    }
+  }
+
+  *returnSize = k;
+  return result;
 }

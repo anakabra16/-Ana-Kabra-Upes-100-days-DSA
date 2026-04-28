@@ -1,44 +1,54 @@
-#include <stdio.h>
 #include <stdlib.h>
 
-int cmp(const void *a, const void *b) {
-    return (*(int *)a - *(int *)b);
-}
+int compare(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
 
-int main() {
-    int n;
-    scanf("%d", &n);
+int **threeSum(int *nums, int numsSize, int *returnSize,
+               int **returnColumnSizes) {
 
-    int nums[n];
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &nums[i]);
+  qsort(nums, numsSize, sizeof(int), compare);
+
+  int maxSize = numsSize * numsSize; // safe upper bound
+
+  int **result = (int **)malloc(sizeof(int *) * maxSize);
+  *returnColumnSizes = (int *)malloc(sizeof(int) * maxSize);
+
+  int k = 0;
+
+  for (int i = 0; i < numsSize - 2; i++) {
+
+    if (i > 0 && nums[i] == nums[i - 1])
+      continue;
+
+    int left = i + 1;
+    int right = numsSize - 1;
+
+    while (left < right) {
+      int sum = nums[i] + nums[left] + nums[right];
+
+      if (sum == 0) {
+        result[k] = (int *)malloc(3 * sizeof(int));
+        result[k][0] = nums[i];
+        result[k][1] = nums[left];
+        result[k][2] = nums[right];
+        (*returnColumnSizes)[k] = 3;
+        k++;
+
+        left++;
+        right--;
+
+        while (left < right && nums[left] == nums[left - 1])
+          left++;
+        while (left < right && nums[right] == nums[right + 1])
+          right--;
+
+      } else if (sum < 0) {
+        left++;
+      } else {
+        right--;
+      }
     }
+  }
 
-    qsort(nums, n, sizeof(int), cmp);
-
-    for (int i = 0; i < n - 2; i++) {
-        if (i > 0 && nums[i] == nums[i - 1]) continue;
-
-        int l = i + 1, r = n - 1;
-
-        while (l < r) {
-            int sum = nums[i] + nums[l] + nums[r];
-
-            if (sum == 0) {
-                printf("%d %d %d\n", nums[i], nums[l], nums[r]);
-
-                while (l < r && nums[l] == nums[l + 1]) l++;
-                while (l < r && nums[r] == nums[r - 1]) r--;
-
-                l++;
-                r--;
-            } else if (sum < 0) {
-                l++;
-            } else {
-                r--;
-            }
-        }
-    }
-
-    return 0;
+  *returnSize = k;
+  return result;
 }

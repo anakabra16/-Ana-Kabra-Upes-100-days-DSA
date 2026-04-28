@@ -2,38 +2,44 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node* next;
+  int data;
+  struct Node *next;
 };
 
-int countNodes(struct Node* head) {
-    int count = 0;
-    while (head) {
-        count++;
-        head = head->next;
-    }
-    return count;
-}
-
 int main() {
-    int n, x;
-    scanf("%d", &n);
+  int n;
+  scanf("%d", &n);
 
-    struct Node *head = NULL, *tail = NULL;
+  struct Node *head = NULL, *temp = NULL, *newNode;
 
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-        newNode->data = x;
-        newNode->next = NULL;
+  // create linked list
+  for (int i = 0; i < n; i++) {
+    int value;
+    scanf("%d", &value);
 
-        if (!head) head = tail = newNode;
-        else {
-            tail->next = newNode;
-            tail = newNode;
-        }
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      temp = newNode;
     }
+  }
 
-    printf("%d", countNodes(head));
-    return 0;
+  // count nodes
+  int count = 0;
+  temp = head;
+
+  while (temp != NULL) {
+    count++;
+    temp = temp->next;
+  }
+
+  printf("%d\n", count);
+
+  return 0;
 }

@@ -1,42 +1,47 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-int evalRPN(char **tokens, int tokensSize) {
+typedef struct {
+  int *stack;
+  int *minStack;
+  int top;
+  int minTop;
+  int size;
+} MinStack;
 
-    int stack[1000];
-    int top = -1;
+MinStack *minStackCreate() {
+  MinStack *obj = (MinStack *)malloc(sizeof(MinStack));
+  obj->size = 30000;
 
-    for(int i = 0; i < tokensSize; i++) {
+  obj->stack = (int *)malloc(sizeof(int) * obj->size);
+  obj->minStack = (int *)malloc(sizeof(int) * obj->size);
 
-        if(strcmp(tokens[i], "+") == 0) {
-            int b = stack[top--];
-            int a = stack[top--];
-            stack[++top] = a + b;
-        }
+  obj->top = -1;
+  obj->minTop = -1;
 
-        else if(strcmp(tokens[i], "-") == 0) {
-            int b = stack[top--];
-            int a = stack[top--];
-            stack[++top] = a - b;
-        }
+  return obj;
+}
 
-        else if(strcmp(tokens[i], "*") == 0) {
-            int b = stack[top--];
-            int a = stack[top--];
-            stack[++top] = a * b;
-        }
+void minStackPush(MinStack *obj, int val) {
+  obj->stack[++obj->top] = val;
 
-        else if(strcmp(tokens[i], "/") == 0) {
-            int b = stack[top--];
-            int a = stack[top--];
-            stack[++top] = a / b;
-        }
+  if (obj->minTop == -1 || val <= obj->minStack[obj->minTop]) {
+    obj->minStack[++obj->minTop] = val;
+  }
+}
 
-        else {
-            stack[++top] = atoi(tokens[i]);
-        }
-    }
+void minStackPop(MinStack *obj) {
+  if (obj->stack[obj->top] == obj->minStack[obj->minTop]) {
+    obj->minTop--;
+  }
+  obj->top--;
+}
 
-    return stack[top];
+int minStackTop(MinStack *obj) { return obj->stack[obj->top]; }
+
+int minStackGetMin(MinStack *obj) { return obj->minStack[obj->minTop]; }
+
+void minStackFree(MinStack *obj) {
+  free(obj->stack);
+  free(obj->minStack);
+  free(obj);
 }

@@ -1,23 +1,26 @@
-#include<stdio.h>
-int main(){
-    int n , i , j , sum = 0;
+#include <stdio.h>
 
-    printf("enter size of square matrix: ");
-    scanf("%d",&n);
+int main() {
+  int m, n;
+  scanf("%d %d", &m, &n);
 
-    int matrix[n][n];
+  int arr[m][n];
 
-    printf("enter elements:\n");
-    for (i = 0 ; i < n ; i++){
-        for (j = 0 ; j < n ; j++){
-            scanf("%d",&matrix[i][j]);
-        }
+  // input matrix
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      scanf("%d", &arr[i][j]);
     }
-    for(i = 0 ; i < n ; i++){
-        sum += matrix[i][i];
-    }
-    printf("sum of primary diagonal:%d",sum);
+  }
 
-    return 0;
+  int sum = 0;
 
+  // sum of primary diagonal
+  for (int i = 0; i < m && i < n; i++) {
+    sum += arr[i][i];
+  }
+
+  printf("%d\n", sum);
+
+  return 0;
 }

@@ -2,17 +2,23 @@
 #include <string.h>
 
 int main() {
-    char str[100];
-    scanf("%s", str);   
+  char str[1000];
 
-    int len = strlen(str);
+  scanf("%s", str);
 
-    for (int i = 0; i < len / 2; i++) {
-        char temp = str[i];
-        str[i] = str[len - 1 - i];
-        str[len - 1 - i] = temp;
-    }
+  int i = 0;
+  int j = strlen(str) - 1;
 
-    printf("%s", str);
-    return 0;
+  while (i < j) {
+    char temp = str[i];
+    str[i] = str[j];
+    str[j] = temp;
+
+    i++;
+    j--;
+  }
+
+  printf("%s\n", str);
+
+  return 0;
 }

@@ -2,42 +2,58 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node *next;
+  int data;
+  struct Node *next;
 };
 
-int main() {
-    int n, x;
-    struct Node *head = NULL, *temp = NULL, *newnode;
+// create circular linked list
+struct Node *createList(int n) {
+  struct Node *head = NULL, *temp = NULL, *newNode;
 
-    scanf("%d", &n);
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
 
-    for(int i = 0; i < n; i++) {
-        newnode = (struct Node*)malloc(sizeof(struct Node));
-        scanf("%d", &x);
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
 
-        newnode->data = x;
-        newnode->next = NULL;
-
-        if(head == NULL) {
-            head = newnode;
-            temp = newnode;
-        }
-        else {
-            temp->next = newnode;
-            temp = newnode;
-        }
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      temp = newNode;
     }
+  }
 
-    // make circular
+  // make it circular
+  if (temp != NULL)
     temp->next = head;
 
-    // traversal
-    temp = head;
-    do {
-        printf("%d ", temp->data);
-        temp = temp->next;
-    } while(temp != head);
+  return head;
+}
 
-    return 0;
+// traverse circular list
+void printList(struct Node *head) {
+  if (head == NULL)
+    return;
+
+  struct Node *temp = head;
+
+  do {
+    printf("%d ", temp->data);
+    temp = temp->next;
+  } while (temp != head);
+}
+
+int main() {
+  int n;
+  scanf("%d", &n);
+
+  struct Node *head = createList(n);
+
+  printList(head);
+
+  return 0;
 }

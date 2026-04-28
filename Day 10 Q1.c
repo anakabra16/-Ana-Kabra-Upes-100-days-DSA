@@ -2,23 +2,27 @@
 #include <string.h>
 
 int main() {
-    char s[100];
-    scanf("%s", s);
+  char s[1000];
+  scanf("%s", s);
 
-    int len = strlen(s);
-    int isPalindrome = 1;
+  int i = 0;
+  int j = strlen(s) - 1;
 
-    for (int i = 0; i < len / 2; i++) {
-        if (s[i] != s[len - 1 - i]) {
-            isPalindrome = 0;
-            break;
-        }
+  int isPalindrome = 1;
+
+  while (i < j) {
+    if (s[i] != s[j]) {
+      isPalindrome = 0;
+      break;
     }
+    i++;
+    j--;
+  }
 
-    if (isPalindrome)
-        printf("YES");
-    else
-        printf("NO");
+  if (isPalindrome)
+    printf("YES\n");
+  else
+    printf("NO\n");
 
-    return 0;
+  return 0;
 }

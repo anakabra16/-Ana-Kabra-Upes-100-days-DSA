@@ -1,27 +1,23 @@
-#include <stdio.h>
+void reverse(int *nums, int start, int end) {
+  while (start < end) {
+    int temp = nums[start];
+    nums[start] = nums[end];
+    nums[end] = temp;
 
-int main()
-{
-    int n,k,i;
-    scanf("%d",&n);
-    int a[n];
+    start++;
+    end--;
+  }
+}
 
-    for(i=0;i<n;i++)
-        scanf("%d",&a[i]);
+void rotate(int *nums, int numsSize, int k) {
+  k = k % numsSize; // handle large k
 
-    scanf("%d",&k);
-    k=k%n;
+  // step 1: reverse whole array
+  reverse(nums, 0, numsSize - 1);
 
-    for(int r=0;r<k;r++)
-    {
-        int last=a[n-1];
-        for(i=n-1;i>0;i--)
-            a[i]=a[i-1];
-        a[0]=last;
-    }
+  // step 2: reverse first k elements
+  reverse(nums, 0, k - 1);
 
-    for(i=0;i<n;i++)
-        printf("%d ",a[i]);
-
-    return 0;
+  // step 3: reverse remaining elements
+  reverse(nums, k, numsSize - 1);
 }

@@ -1,42 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
+class Solution{public : void removeLoop(Node * head){if (head == NULL) return;
 
-struct Node {
-    int data;
-    struct Node* next;
-};
+Node *slow = head, *fast = head;
 
-void removeCycle(struct Node* head) {
+// Step 1: detect loop
+while (fast != NULL && fast->next != NULL) {
+  slow = slow->next;
+  fast = fast->next->next;
 
-    struct Node *slow = head, *fast = head;
+  if (slow == fast) {
+    // Step 2: find start of loop
+    Node *ptr = head;
 
-    // Detect cycle
-    while (fast != NULL && fast->next != NULL) {
-        slow = slow->next;
-        fast = fast->next->next;
-
-        if (slow == fast) {
-            break;
-        }
+    while (ptr != slow) {
+      ptr = ptr->next;
+      slow = slow->next;
     }
 
-    // No cycle
-    if (slow != fast)
-        return;
-
-    // Find start of cycle
-    slow = head;
-
-    while (slow != fast) {
-        slow = slow->next;
-        fast = fast->next;
+    // Step 3: remove loop
+    Node *temp = ptr;
+    while (temp->next != ptr) {
+      temp = temp->next;
     }
 
-    // Find last node of cycle
-    while (fast->next != slow) {
-        fast = fast->next;
-    }
-
-    // Remove cycle
-    fast->next = NULL;
+    temp->next = NULL;
+    return;
+  }
 }
+}
+}
+;

@@ -1,69 +1,92 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct node{
-    int data;
-    struct node *next;
+struct Node {
+  int data;
+  struct Node *next;
 };
 
-int main(){
+// create list
+struct Node *createList(int n) {
+  struct Node *head = NULL, *temp = NULL, *newNode;
 
-    int n, k, x;
-    struct node *head = NULL, *temp = NULL, *newnode;
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
 
-    scanf("%d",&n);
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
 
-    // create linked list
-    for(int i=0;i<n;i++){
-        scanf("%d",&x);
-
-        newnode = (struct node*)malloc(sizeof(struct node));
-        newnode->data = x;
-        newnode->next = NULL;
-
-        if(head == NULL){
-            head = newnode;
-            temp = newnode;
-        }
-        else{
-            temp->next = newnode;
-            temp = newnode;
-        }
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      temp = newNode;
     }
+  }
 
-    scanf("%d",&k);
+  return head;
+}
 
-    // find length
-    int count = 1;
-    temp = head;
-    while(temp->next != NULL){
-        temp = temp->next;
-        count++;
-    }
+// rotate list
+struct Node *rotateRight(struct Node *head, int k) {
+  if (head == NULL || head->next == NULL)
+    return head;
 
-    // connect last node to head (make circular)
-    temp->next = head;
+  // Step 1: find length and last node
+  int n = 1;
+  struct Node *temp = head;
 
-    k = k % count;
+  while (temp->next != NULL) {
+    temp = temp->next;
+    n++;
+  }
 
-    // move to new last node
-    int steps = count - k;
-    temp = head;
-    for(int i=1;i<steps;i++)
-        temp = temp->next;
+  // Step 2: handle large k
+  k = k % n;
+  if (k == 0)
+    return head;
 
-    // new head
-    head = temp->next;
+  // Step 3: make circular
+  temp->next = head;
 
-    // break circle
-    temp->next = NULL;
+  // Step 4: move to (n - k)th node
+  int steps = n - k;
+  struct Node *newTail = head;
 
-    // print list
-    temp = head;
-    while(temp != NULL){
-        printf("%d ",temp->data);
-        temp = temp->next;
-    }
+  for (int i = 1; i < steps; i++) {
+    newTail = newTail->next;
+  }
 
-    return 0;
+  // Step 5: break loop
+  struct Node *newHead = newTail->next;
+  newTail->next = NULL;
+
+  return newHead;
+}
+
+// print list
+void printList(struct Node *head) {
+  while (head != NULL) {
+    printf("%d ", head->data);
+    head = head->next;
+  }
+}
+
+int main() {
+  int n;
+  scanf("%d", &n);
+
+  struct Node *head = createList(n);
+
+  int k;
+  scanf("%d", &k);
+
+  head = rotateRight(head, k);
+
+  printList(head);
+
+  return 0;
 }

@@ -1,30 +1,19 @@
-#include <stdio.h>
-#include <limits.h>
+int maxSubArray(int *nums, int numsSize) {
+  int maxSum = nums[0];
+  int currentSum = nums[0];
 
-int main() {
-    int n;
-    scanf("%d", &n);
+  for (int i = 1; i < numsSize; i++) {
 
-    int nums[n];
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &nums[i]);
-    }
+    // either take current element OR extend previous sum
+    if (currentSum + nums[i] > nums[i])
+      currentSum = currentSum + nums[i];
+    else
+      currentSum = nums[i];
 
-    int max_sum = INT_MIN;
-    int current_sum = 0;
+    // update max
+    if (currentSum > maxSum)
+      maxSum = currentSum;
+  }
 
-    for(int i = 0; i < n; i++) {
-        current_sum += nums[i];
-
-        if(current_sum > max_sum) {
-            max_sum = current_sum;
-        }
-
-        if(current_sum < 0) {
-            current_sum = 0;
-        }
-    }
-
-    printf("%d", max_sum);
-    return 0;
+  return maxSum;
 }

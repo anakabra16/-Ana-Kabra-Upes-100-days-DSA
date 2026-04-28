@@ -1,30 +1,31 @@
-#include <stdio.h>
+void setZeroes(int **matrix, int matrixSize, int *matrixColSize) {
+  int m = matrixSize;
+  int n = matrixColSize[0];
 
-int main()
-{
-    int n,i,j,count;
-    scanf("%d",&n);
-    int a[n];
+  int row[m], col[n];
 
-    for(i=0;i<n;i++)
-        scanf("%d",&a[i]);
+  // initialize
+  for (int i = 0; i < m; i++)
+    row[i] = 0;
+  for (int j = 0; j < n; j++)
+    col[j] = 0;
 
-    for(i=0;i<n;i++)
-    {
-        count=1;
-        if(a[i]==-1)
-            continue;
-
-        for(j=i+1;j<n;j++)
-        {
-            if(a[i]==a[j])
-            {
-                count++;
-                a[j]=-1;
-            }
-        }
-        printf("%d:%d ",a[i],count);
+  // mark rows & cols
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      if (matrix[i][j] == 0) {
+        row[i] = 1;
+        col[j] = 1;
+      }
     }
+  }
 
-    return 0;
+  // apply zeros
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      if (row[i] == 1 || col[j] == 1) {
+        matrix[i][j] = 0;
+      }
+    }
+  }
 }

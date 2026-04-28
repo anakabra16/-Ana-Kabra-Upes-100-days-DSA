@@ -1,28 +1,25 @@
 #include <stdio.h>
 
 int main() {
-    int n;
-    scanf("%d", &n);
+  int n;
+  scanf("%d", &n);
 
-    int arr[n];
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
+  int arr[n];
+
+  // input
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &arr[i]);
+  }
+
+  // print first element
+  printf("%d ", arr[0]);
+
+  // check rest
+  for (int i = 1; i < n; i++) {
+    if (arr[i] != arr[i - 1]) {
+      printf("%d ", arr[i]);
     }
+  }
 
-    if (n == 0) return 0;
-
-    int i = 0;  
-
-    for (int j = 1; j < n; j++) {
-        if (arr[j] != arr[i]) {
-            i++;
-            arr[i] = arr[j];
-        }
-    }
-
-    for (int k = 0; k <= i; k++) {
-        printf("%d ", arr[k]);
-    }
-
-    return 0;
+  return 0;
 }

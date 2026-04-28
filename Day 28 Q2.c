@@ -1,84 +1,41 @@
-#include <stdio.h>
-#include <stdlib.h>
+struct ListNode *reverse(struct ListNode *head) {
+  struct ListNode *prev = NULL, *curr = head, *next = NULL;
 
-struct node {
-    int data;
-    struct node *next;
-};
+  while (curr != NULL) {
+    next = curr->next;
+    curr->next = prev;
+    prev = curr;
+    curr = next;
+  }
 
-// function to reverse a linked list
-struct node* reverse(struct node *head) {
-    struct node *prev = NULL, *curr = head, *next;
-
-    while(curr != NULL) {
-        next = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = next;
-    }
-
-    return prev;
+  return prev;
 }
 
-// function to check palindrome
-int isPalindrome(struct node *head) {
+bool isPalindrome(struct ListNode *head) {
+  if (head == NULL || head->next == NULL)
+    return true;
 
-    if(head == NULL || head->next == NULL)
-        return 1;
+  // Step 1: find middle
+  struct ListNode *slow = head, *fast = head;
 
-    struct node *slow = head, *fast = head;
+  while (fast != NULL && fast->next != NULL) {
+    slow = slow->next;
+    fast = fast->next->next;
+  }
 
-    // find middle
-    while(fast->next && fast->next->next) {
-        slow = slow->next;
-        fast = fast->next->next;
-    }
+  // Step 2: reverse second half
+  struct ListNode *second = reverse(slow);
 
-    // reverse second half
-    struct node *second = reverse(slow->next);
+  // Step 3: compare
+  struct ListNode *first = head;
 
-    struct node *first = head;
+  while (second != NULL) {
+    if (first->val != second->val)
+      return false;
 
-    // compare both halves
-    while(second != NULL) {
-        if(first->data != second->data)
-            return 0;
+    first = first->next;
+    second = second->next;
+  }
 
-        first = first->next;
-        second = second->next;
-    }
-
-    return 1;
-}
-
-int main() {
-
-    int n, x;
-    struct node *head = NULL, *temp = NULL, *newnode;
-
-    scanf("%d", &n);
-
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &x);
-
-        newnode = (struct node*)malloc(sizeof(struct node));
-        newnode->data = x;
-        newnode->next = NULL;
-
-        if(head == NULL) {
-            head = newnode;
-            temp = newnode;
-        }
-        else {
-            temp->next = newnode;
-            temp = newnode;
-        }
-    }
-
-    if(isPalindrome(head))
-        printf("true");
-    else
-        printf("false");
-
-    return 0;
+  return true;
 }

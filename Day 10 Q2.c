@@ -1,24 +1,25 @@
+int *intersect(int *nums1, int nums1Size, int *nums2, int nums2Size,
+               int *returnSize) {
 
-#include <stdio.h>
-#include <stdlib.h>
+  int freq[1001] = {0};
 
-int* intersect(int* nums1, int n1, int* nums2, int n2, int* returnSize) {
-    int freq[1001] = {0};
+  // count elements of nums1
+  for (int i = 0; i < nums1Size; i++) {
+    freq[nums1[i]]++;
+  }
 
-    for (int i = 0; i < n1; i++) {
-        freq[nums1[i]]++;
+  int *result = (int *)malloc(sizeof(int) *
+                              (nums1Size < nums2Size ? nums1Size : nums2Size));
+  int k = 0;
+
+  // check nums2
+  for (int i = 0; i < nums2Size; i++) {
+    if (freq[nums2[i]] > 0) {
+      result[k++] = nums2[i];
+      freq[nums2[i]]--;
     }
+  }
 
-    int* result = (int*)malloc(sizeof(int) * (n1 < n2 ? n1 : n2));
-    int k = 0;
-
-    for (int i = 0; i < n2; i++) {
-        if (freq[nums2[i]] > 0) {
-            result[k++] = nums2[i];
-            freq[nums2[i]]--;
-        }
-    }
-
-    *returnSize = k;
-    return result;
+  *returnSize = k;
+  return result;
 }

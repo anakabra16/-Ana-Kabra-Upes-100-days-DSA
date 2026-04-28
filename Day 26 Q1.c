@@ -2,42 +2,52 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node *prev, *next;
+  int data;
+  struct Node *prev;
+  struct Node *next;
 };
 
-struct Node* insertEnd(struct Node* head, int x) {
-    struct Node* n = malloc(sizeof(struct Node));
-    n->data = x;
-    n->next = NULL;
-    n->prev = NULL;
+// create doubly linked list
+struct Node *createList(int n) {
+  struct Node *head = NULL, *temp = NULL, *newNode;
 
-    if (!head) return n;
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
 
-    struct Node* p = head;
-    while (p->next) p = p->next;
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->prev = NULL;
+    newNode->next = NULL;
 
-    p->next = n;
-    n->prev = p;
-    return head;
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      newNode->prev = temp;
+      temp = newNode;
+    }
+  }
+
+  return head;
 }
 
-void printList(struct Node* head) {
-    while (head) {
-        printf("%d ", head->data);
-        head = head->next;
-    }
+// traverse forward
+void printList(struct Node *head) {
+  while (head != NULL) {
+    printf("%d ", head->data);
+    head = head->next;
+  }
 }
 
 int main() {
-    int n, x;
-    struct Node* head = NULL;
+  int n;
+  scanf("%d", &n);
 
-    scanf("%d", &n);
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        head = insertEnd(head, x);
-    }
+  struct Node *head = createList(n);
 
-    printList(head);
+  printList(head);
+
+  return 0;
 }

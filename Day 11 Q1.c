@@ -1,40 +1,32 @@
 #include <stdio.h>
 
 int main() {
-    int r, c;
+  int m, n;
+  scanf("%d %d", &m, &n);
 
-    printf("Enter rows and columns: ");
-    scanf("%d %d", &r, &c);
+  int a[m][n], b[m][n];
 
-    int A[r][c], B[r][c], Sum[r][c];
-
-    printf("Enter elements of Matrix A:\n");
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            scanf("%d", &A[i][j]);
-        }
+  // input first matrix
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      scanf("%d", &a[i][j]);
     }
+  }
 
-    printf("Enter elements of Matrix B:\n");
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            scanf("%d", &B[i][j]);
-        }
+  // input second matrix
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      scanf("%d", &b[i][j]);
     }
+  }
 
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            Sum[i][j] = A[i][j] + B[i][j];
-        }
+  // compute and print result
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      printf("%d ", a[i][j] + b[i][j]);
     }
+    printf("\n");
+  }
 
-    printf("Sum Matrix:\n");
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            printf("%d ", Sum[i][j]);
-        }
-        printf("\n");
-    }
-
-    return 0;
+  return 0;
 }

@@ -1,27 +1,20 @@
-#include <stdlib.h>
+struct ListNode *removeElements(struct ListNode *head, int val) {
 
-struct Node {
-    int data;
-    struct Node* next;
-};
+  // dummy node
+  struct ListNode dummy;
+  dummy.next = head;
 
-struct Node* removeElements(struct Node* head, int val) {
-    while (head && head->data == val) {
-        struct Node* t = head;
-        head = head->next;
-        free(t);
+  struct ListNode *prev = &dummy;
+  struct ListNode *curr = head;
+
+  while (curr != NULL) {
+    if (curr->val == val) {
+      prev->next = curr->next; // remove node
+    } else {
+      prev = curr; // move prev only if not deleted
     }
+    curr = curr->next;
+  }
 
-    struct Node* curr = head;
-
-    while (curr && curr->next) {
-        if (curr->next->data == val) {
-            struct Node* t = curr->next;
-            curr->next = t->next;
-            free(t);
-        } else {
-            curr = curr->next;
-        }
-    }
-    return head;
+  return dummy.next;
 }

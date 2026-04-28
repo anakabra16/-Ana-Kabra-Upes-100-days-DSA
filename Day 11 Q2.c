@@ -1,34 +1,25 @@
-#include <stdio.h>
+int **transpose(int **matrix, int matrixSize, int *matrixColSize,
+                int *returnSize, int **returnColumnSizes) {
 
-int main() {
-    int r, c;
+  int m = matrixSize;
+  int n = matrixColSize[0];
 
-    printf("Enter rows and columns: ");
-    scanf("%d %d", &r, &c);
+  // result matrix will be n x m
+  int **result = (int **)malloc(n * sizeof(int *));
+  *returnColumnSizes = (int *)malloc(n * sizeof(int));
 
-    int A[r][c], T[c][r];
+  for (int i = 0; i < n; i++) {
+    result[i] = (int *)malloc(m * sizeof(int));
+    (*returnColumnSizes)[i] = m;
+  }
 
-    printf("Enter matrix elements:\n");
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            scanf("%d", &A[i][j]);
-        }
+  // transpose logic
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      result[j][i] = matrix[i][j];
     }
+  }
 
-    // Transpose
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            T[j][i] = A[i][j];
-        }
-    }
-
-    printf("Transpose Matrix:\n");
-    for (int i = 0; i < c; i++) {
-        for (int j = 0; j < r; j++) {
-            printf("%d ", T[i][j]);
-        }
-        printf("\n");
-    }
-
-    return 0;
+  *returnSize = n;
+  return result;
 }

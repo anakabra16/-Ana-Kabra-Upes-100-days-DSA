@@ -1,40 +1,33 @@
-#include <stdio.h>
+int maxSubarraySumCircular(int *nums, int numsSize) {
 
-int max(int a, int b) {
-    return a > b ? a : b;
-}
+  int total = 0;
 
-int min(int a, int b) {
-    return a < b ? a : b;
-}
+  int maxSum = nums[0], currMax = 0;
+  int minSum = nums[0], currMin = 0;
 
-int main() {
-    int n;
-    scanf("%d", &n);
+  for (int i = 0; i < numsSize; i++) {
+    int x = nums[i];
 
-    int nums[n];
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &nums[i]);
-    }
+    // Kadane for max
+    currMax = (currMax > 0) ? currMax + x : x;
+    if (currMax > maxSum)
+      maxSum = currMax;
 
-    int total = nums[0];
-    int currMax = nums[0], maxSum = nums[0];
-    int currMin = nums[0], minSum = nums[0];
+    // Kadane for min
+    currMin = (currMin < 0) ? currMin + x : x;
+    if (currMin < minSum)
+      minSum = currMin;
 
-    for (int i = 1; i < n; i++) {
-        currMax = max(nums[i], currMax + nums[i]);
-        maxSum = max(maxSum, currMax);
+    total += x;
+  }
 
-        currMin = min(nums[i], currMin + nums[i]);
-        minSum = min(minSum, currMin);
+  // all negative case
+  if (maxSum < 0)
+    return maxSum;
 
-        total += nums[i];
-    }
-
-    if (maxSum < 0)
-        printf("%d", maxSum);
-    else
-        printf("%d", max(maxSum, total - minSum));
-
-    return 0;
+  // return best of both cases
+  if (maxSum > (total - minSum))
+    return maxSum;
+  else
+    return total - minSum;
 }

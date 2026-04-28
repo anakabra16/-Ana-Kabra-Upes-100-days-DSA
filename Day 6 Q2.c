@@ -1,30 +1,17 @@
-#include <stdio.h>
+void moveZeroes(int *nums, int numsSize) {
+  int k = 0; // position for non-zero elements
 
-int main() {
-    int n;
-    scanf("%d", &n);
-
-    int arr[n];
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
+  // step 1: move non-zero elements forward
+  for (int i = 0; i < numsSize; i++) {
+    if (nums[i] != 0) {
+      nums[k] = nums[i];
+      k++;
     }
+  }
 
-    int k = 0;
-
-    for (int i = 0; i < n; i++) {
-        if (arr[i] != 0) {
-            arr[k++] = arr[i];
-        }
-    }
-
-    while (k < n) {
-        arr[k++] = 0;
-    }
-
-    // print
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-
-    return 0;
+  // step 2: fill remaining with zeros
+  while (k < numsSize) {
+    nums[k] = 0;
+    k++;
+  }
 }

@@ -1,23 +1,27 @@
-struct Node {
-    int data;
-    struct Node* next;
-};
+struct ListNode *detectCycle(struct ListNode *head) {
+  if (head == NULL)
+    return NULL;
 
-struct Node* detectCycle(struct Node* head) {
-    struct Node *slow = head, *fast = head;
+  struct ListNode *slow = head;
+  struct ListNode *fast = head;
 
-    while (fast && fast->next) {
+  // Step 1: detect cycle
+  while (fast != NULL && fast->next != NULL) {
+    slow = slow->next;
+    fast = fast->next->next;
+
+    if (slow == fast) {
+      // Step 2: find cycle start
+      struct ListNode *ptr = head;
+
+      while (ptr != slow) {
+        ptr = ptr->next;
         slow = slow->next;
-        fast = fast->next->next;
+      }
 
-        if (slow == fast) {
-            slow = head;
-            while (slow != fast) {
-                slow = slow->next;
-                fast = fast->next;
-            }
-            return slow;
-        }
+      return ptr; // start of cycle
     }
-    return ;
+  }
+
+  return NULL; // no cycle
 }

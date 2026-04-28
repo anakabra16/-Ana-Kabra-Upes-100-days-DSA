@@ -1,27 +1,32 @@
-#include<stdio.h>
-int main(){
-    int n;
-    scanf("%d",&n);
+#include <stdio.h>
 
-    int arr[n];
-    for(int i = 0 ; i < n ; i++){
-        scanf("%d",&arr[i]);
+int main() {
+  int n;
+  scanf("%d", &n);
 
-    }
-    
-    int left = 0, right = n-1;
-    while (left < right) {
-    int temp = arr[left];
-    arr[left]=arr[right];
-    arr[right]= temp;
+  int arr[n];
 
-    left++;
-    right--;
-    }
+  // input array
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &arr[i]);
+  }
 
-    for(int i = 0 ; i < n ; i++){
-        printf("%d",arr[i]);
+  int start = 0, end = n - 1;
 
-}
-return 0;
+  // two-pointer reversal
+  while (start < end) {
+    int temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+
+    start++;
+    end--;
+  }
+
+  // print reversed array
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+
+  return 0;
 }

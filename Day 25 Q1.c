@@ -2,44 +2,59 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node* next;
+  int data;
+  struct Node *next;
 };
 
-struct Node* newNode(int x) {
-    struct Node* t = malloc(sizeof(struct Node));
-    t->data = x;
-    t->next = NULL;
-    return t;
-}
+// create linked list
+struct Node *createList(int n) {
+  struct Node *head = NULL, *temp = NULL, *newNode;
 
-struct Node* insert(struct Node* h, int x) {
-    if (!h) return newNode(x);
-    struct Node* p = h;
-    while (p->next) p = p->next;
-    p->next = newNode(x);
-    return h;
-}
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
 
-int countKey(struct Node* head, int key) {
-    int count = 0;
-    while (head) {
-        if (head->data == key) count++;
-        head = head->next;
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      temp = newNode;
     }
-    return count;
+  }
+
+  return head;
+}
+
+// count occurrences
+int countOccurrences(struct Node *head, int key) {
+  int count = 0;
+
+  while (head != NULL) {
+    if (head->data == key)
+      count++;
+    head = head->next;
+  }
+
+  return count;
 }
 
 int main() {
-    int n, x, key;
-    struct Node* head = NULL;
+  int n;
+  scanf("%d", &n);
 
-    scanf("%d", &n);
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        head = insert(head, x);
-    }
+  struct Node *head = createList(n);
 
-    scanf("%d", &key);
-    printf("%d", countKey(head, key));
+  int key;
+  scanf("%d", &key);
+
+  int result = countOccurrences(head, key);
+
+  printf("%d\n", result);
+
+  return 0;
 }

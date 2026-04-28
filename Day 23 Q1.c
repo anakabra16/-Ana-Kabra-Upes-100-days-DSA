@@ -2,51 +2,80 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node* next;
+  int data;
+  struct Node *next;
 };
 
-struct Node* newNode(int x) {
-    struct Node* t = malloc(sizeof(struct Node));
-    t->data = x;
-    t->next = NULL;
-    return t;
-}
+// function to create list
+struct Node *createList(int n) {
+  struct Node *head = NULL, *temp = NULL, *newNode;
 
-struct Node* insert(struct Node* h, int x) {
-    if (!h) return newNode(x);
-    struct Node* p = h;
-    while (p->next) p = p->next;
-    p->next = newNode(x);
-    return h;
-}
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
 
-struct Node* merge(struct Node* a, struct Node* b) {
-    struct Node d, *t = &d;
-    d.next = NULL;
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
 
-    while (a && b) {
-        if (a->data <= b->data) { t->next = a; a = a->next; }
-        else { t->next = b; b = b->next; }
-        t = t->next;
+    if (head == NULL) {
+      head = newNode;
+      temp = newNode;
+    } else {
+      temp->next = newNode;
+      temp = newNode;
     }
-    t->next = a ? a : b;
-    return d.next;
+  }
+
+  return head;
 }
 
-void print(struct Node* h) {
-    while (h) { printf("%d ", h->data); h = h->next; }
+// function to merge two sorted lists
+struct Node *merge(struct Node *l1, struct Node *l2) {
+  struct Node dummy;
+  struct Node *tail = &dummy;
+  dummy.next = NULL;
+
+  while (l1 != NULL && l2 != NULL) {
+    if (l1->data < l2->data) {
+      tail->next = l1;
+      l1 = l1->next;
+    } else {
+      tail->next = l2;
+      l2 = l2->next;
+    }
+    tail = tail->next;
+  }
+
+  // attach remaining nodes
+  if (l1 != NULL)
+    tail->next = l1;
+  else
+    tail->next = l2;
+
+  return dummy.next;
+}
+
+// print list
+void printList(struct Node *head) {
+  while (head != NULL) {
+    printf("%d ", head->data);
+    head = head->next;
+  }
 }
 
 int main() {
-    int n,m,x;
-    struct Node *l1=NULL,*l2=NULL;
+  int n, m;
 
-    scanf("%d",&n);
-    for(int i=0;i<n;i++){ scanf("%d",&x); l1=insert(l1,x); }
+  scanf("%d", &n);
+  struct Node *list1 = createList(n);
 
-    scanf("%d",&m);
-    for(int i=0;i<m;i++){ scanf("%d",&x); l2=insert(l2,x); }
+  scanf("%d", &m);
+  struct Node *list2 = createList(m);
 
-    print(merge(l1,l2));
+  struct Node *result = merge(list1, list2);
+
+  printList(result);
+
+  return 0;
 }
