@@ -1,73 +1,76 @@
-#include <stdio.h>
 #include <ctype.h>
-#include <string.h>
+#include <stdio.h>
+
 
 #define MAX 100
 
 char stack[MAX];
 int top = -1;
 
-void push(char x)
-{
-    stack[++top] = x;
+// push
+void push(char c) { stack[++top] = c; }
+
+// pop
+char pop() { return stack[top--]; }
+
+// peek
+char peek() { return stack[top]; }
+
+// precedence
+int precedence(char c) {
+  if (c == '^')
+    return 3;
+  if (c == '*' || c == '/')
+    return 2;
+  if (c == '+' || c == '-')
+    return 1;
+  return 0;
 }
 
-char pop()
-{
-    if(top == -1)
-        return -1;
-    else
-        return stack[top--];
-}
+int main() {
+  char exp[100], result[100];
+  int k = 0;
 
-int priority(char x)
-{
-    if(x == '+' || x == '-')
-        return 1;
-    if(x == '*' || x == '/')
-        return 2;
-    if(x == '^')
-        return 3;
-    return 0;
-}
+  scanf("%s", exp);
 
-int main()
-{
-    char exp[100];
-    char *e, x;
+  for (int i = 0; exp[i] != '\0'; i++) {
+    char ch = exp[i];
 
-    printf("Enter infix expression: ");
-    scanf("%s", exp);
-
-    e = exp;
-
-    while(*e != '\0')
-    {
-        if(isalnum(*e))
-            printf("%c", *e);
-
-        else if(*e == '(')
-            push(*e);
-
-        else if(*e == ')')
-        {
-            while((x = pop()) != '(')
-                printf("%c", x);
-        }
-
-        else
-        {
-            while(priority(stack[top]) >= priority(*e))
-                printf("%c", pop());
-
-            push(*e);
-        }
-
-        e++;
+    // operand
+    if (isalnum(ch)) {
+      result[k++] = ch;
     }
 
-    while(top != -1)
-        printf("%c", pop());
+    // opening bracket
+    else if (ch == '(') {
+      push(ch);
+    }
 
-    return 0;
+    // closing bracket
+    else if (ch == ')') {
+      while (top != -1 && peek() != '(') {
+        result[k++] = pop();
+      }
+      pop(); // remove '('
+    }
+
+    // operator
+    else {
+      while (top != -1 && precedence(peek()) >= precedence(ch)) {
+        result[k++] = pop();
+      }
+      push(ch);
+    }
+  }
+
+  // pop remaining operators
+  while (top != -1) {
+    result[k++] = pop();
+  }
+
+  result[k] = '\0';
+
+  printf("%s\n", result);
+
+  return 0;
 }

@@ -5,60 +5,55 @@
 int stack[MAX];
 int top = -1;
 
-void push(int value) {
-    if(top == MAX-1) {
-        printf("Stack Overflow\n");
-    }
-    else {
-        top++;
-        stack[top] = value;
-    }
+// push operation
+void push(int val) {
+  if (top == MAX - 1) {
+    printf("Stack Overflow\n");
+    return;
+  }
+  stack[++top] = val;
 }
 
+// pop operation
 void pop() {
-    if(top == -1) {
-        printf("Stack Underflow\n");
-    }
-    else {
-        top--;
-    }
+  if (top == -1) {
+    printf("Stack Underflow\n");
+    return;
+  }
+  printf("%d\n", stack[top--]);
 }
 
+// display stack
 void display() {
-    if(top == -1) {
-        printf("Stack is empty\n");
-    }
-    else {
-        for(int i = 0; i <= top; i++) {
-            printf("%d ", stack[i]);
-        }
-        printf("\n");
-    }
+  if (top == -1) {
+    printf("Stack is Empty\n");
+    return;
+  }
+
+  for (int i = top; i >= 0; i--) {
+    printf("%d ", stack[i]);
+  }
+  printf("\n");
 }
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, op, val;
+  for (int i = 0; i < n; i++) {
+    int type;
+    scanf("%d", &type);
 
-    scanf("%d",&n);
-
-    for(int i=0;i<n;i++) {
-
-        scanf("%d",&op);
-
-        if(op == 1) {
-            scanf("%d",&val);
-            push(val);
-        }
-
-        else if(op == 2) {
-            pop();
-        }
-
-        else if(op == 3) {
-            display();
-        }
+    if (type == 1) {
+      int val;
+      scanf("%d", &val);
+      push(val);
+    } else if (type == 2) {
+      pop();
+    } else if (type == 3) {
+      display();
     }
+  }
 
-    return 0;
+  return 0;
 }

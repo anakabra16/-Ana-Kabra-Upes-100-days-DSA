@@ -1,57 +1,33 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX 100
+int evalRPN(char **tokens, int tokensSize) {
 
-int stack[MAX];
-int top = -1;
+  int stack[10000];
+  int top = -1;
 
-void push(int x) {
-    stack[++top] = x;
-}
+  for (int i = 0; i < tokensSize; i++) {
 
-int pop() {
-    return stack[top--];
-}
+    // check operator
+    if (strcmp(tokens[i], "+") == 0 || strcmp(tokens[i], "-") == 0 ||
+        strcmp(tokens[i], "*") == 0 || strcmp(tokens[i], "/") == 0) {
 
-int main() {
-    
-    char *tokens[] = {"2","1","+","3","*"};
-    int n = 5;
+      int b = stack[top--];
+      int a = stack[top--];
 
-    for(int i = 0; i < n; i++) {
-
-        if(strcmp(tokens[i], "+") == 0) {
-            int b = pop();
-            int a = pop();
-            push(a + b);
-        }
-
-        else if(strcmp(tokens[i], "-") == 0) {
-            int b = pop();
-            int a = pop();
-            push(a - b);
-        }
-
-        else if(strcmp(tokens[i], "*") == 0) {
-            int b = pop();
-            int a = pop();
-            push(a * b);
-        }
-
-        else if(strcmp(tokens[i], "/") == 0) {
-            int b = pop();
-            int a = pop();
-            push(a / b);
-        }
-
-        else {
-            push(atoi(tokens[i]));
-        }
+      if (strcmp(tokens[i], "+") == 0)
+        stack[++top] = a + b;
+      else if (strcmp(tokens[i], "-") == 0)
+        stack[++top] = a - b;
+      else if (strcmp(tokens[i], "*") == 0)
+        stack[++top] = a * b;
+      else
+        stack[++top] = a / b; // truncates toward zero
+    } else {
+      // convert string to int
+      stack[++top] = atoi(tokens[i]);
     }
+  }
 
-    printf("Result = %d", pop());
-
-    return 0;
+  return stack[top];
 }

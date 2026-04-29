@@ -5,39 +5,48 @@
 int stack[MAX];
 int top = -1;
 
-void push(int value) {
-    top++;
-    stack[top] = value;
+// push
+void push(int val) {
+  if (top == MAX - 1)
+    return; // overflow ignored
+  stack[++top] = val;
 }
 
+// pop
 void pop() {
-    if(top >= 0)
-        top--;
+  if (top == -1)
+    return; // underflow ignored
+  top--;
+}
+
+// display
+void display() {
+  for (int i = top; i >= 0; i--) {
+    printf("%d ", stack[i]);
+  }
 }
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, m, x;
+  // push n elements
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
+    push(val);
+  }
 
-    scanf("%d",&n);
+  int m;
+  scanf("%d", &m);
 
-    // push elements
-    for(int i=0;i<n;i++){
-        scanf("%d",&x);
-        push(x);
-    }
+  // pop m elements
+  for (int i = 0; i < m; i++) {
+    pop();
+  }
 
-    scanf("%d",&m);
+  // print remaining stack
+  display();
 
-    // pop elements
-    for(int i=0;i<m;i++){
-        pop();
-    }
-
-    // display remaining stack
-    for(int i=0;i<=top;i++){
-        printf("%d ",stack[i]);
-    }
-
-    return 0;
+  return 0;
 }

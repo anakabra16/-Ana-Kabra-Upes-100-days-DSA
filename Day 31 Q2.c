@@ -1,31 +1,31 @@
-#include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
 
-bool isValid(char* s) {
+bool isValid(char *s) {
+  char stack[10000];
+  int top = -1;
 
-    char stack[1000];
-    int top = -1;
+  for (int i = 0; s[i] != '\0'; i++) {
 
-    for(int i = 0; s[i] != '\0'; i++) {
+    char ch = s[i];
 
-        if(s[i] == '(' || s[i] == '{' || s[i] == '[') {
-            stack[++top] = s[i];
-        }
+    // push opening brackets
+    if (ch == '(' || ch == '{' || ch == '[') {
+      stack[++top] = ch;
+    } else {
+      // stack empty → invalid
+      if (top == -1)
+        return false;
 
-        else {
+      char topChar = stack[top--];
 
-            if(top == -1)
-                return false;
-
-            char open = stack[top--];
-
-            if((s[i] == ')' && open != '(') ||
-               (s[i] == '}' && open != '{') ||
-               (s[i] == ']' && open != '['))
-                return false;
-        }
+      // check matching
+      if ((ch == ')' && topChar != '(') || (ch == '}' && topChar != '{') ||
+          (ch == ']' && topChar != '[')) {
+        return false;
+      }
     }
+  }
 
-    return top == -1;
+  // stack should be empty
+  return (top == -1);
 }
