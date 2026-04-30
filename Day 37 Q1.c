@@ -1,83 +1,98 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX 100
+#define MAX 1000
 
-int pq[MAX];
+int heap[MAX];
 int size = 0;
 
+// swap helper
+void swap(int *a, int *b) {
+  int t = *a;
+  *a = *b;
+  *b = t;
+}
+
+// heapify up
+void heapifyUp(int i) {
+  while (i > 0) {
+    int parent = (i - 1) / 2;
+    if (heap[parent] > heap[i]) {
+      swap(&heap[parent], &heap[i]);
+      i = parent;
+    } else
+      break;
+  }
+}
+
+// heapify down
+void heapifyDown(int i) {
+  while (1) {
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    int smallest = i;
+
+    if (left < size && heap[left] < heap[smallest])
+      smallest = left;
+
+    if (right < size && heap[right] < heap[smallest])
+      smallest = right;
+
+    if (smallest != i) {
+      swap(&heap[i], &heap[smallest]);
+      i = smallest;
+    } else
+      break;
+  }
+}
+
+// insert
 void insert(int x) {
-    if(size < MAX) {
-        pq[size++] = x;
-    }
+  heap[size] = x;
+  heapifyUp(size);
+  size++;
 }
 
-int findMinIndex() {
-    if(size == 0)
-        return -1;
-
-    int minIndex = 0;
-
-    for(int i = 1; i < size; i++) {
-        if(pq[i] < pq[minIndex])
-            minIndex = i;
-    }
-
-    return minIndex;
-}
-
+// delete (remove min)
 void deleteMin() {
-    int index = findMinIndex();
+  if (size == 0) {
+    printf("-1\n");
+    return;
+  }
 
-    if(index == -1) {
-        printf("-1\n");
-        return;
-    }
+  printf("%d\n", heap[0]);
 
-    printf("%d\n", pq[index]);
-
-    for(int i = index; i < size-1; i++) {
-        pq[i] = pq[i+1];
-    }
-
-    size--;
+  heap[0] = heap[size - 1];
+  size--;
+  heapifyDown(0);
 }
 
+// peek
 void peek() {
-    int index = findMinIndex();
-
-    if(index == -1) {
-        printf("-1\n");
-        return;
-    }
-
-    printf("%d\n", pq[index]);
+  if (size == 0)
+    printf("-1\n");
+  else
+    printf("%d\n", heap[0]);
 }
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, x;
+  while (n--) {
     char op[10];
+    scanf("%s", op);
 
-    scanf("%d", &n);
-
-    for(int i = 0; i < n; i++) {
-
-        scanf("%s", op);
-
-        if(strcmp(op, "insert") == 0) {
-            scanf("%d", &x);
-            insert(x);
-        }
-
-        else if(strcmp(op, "delete") == 0) {
-            deleteMin();
-        }
-
-        else if(strcmp(op, "peek") == 0) {
-            peek();
-        }
+    if (strcmp(op, "insert") == 0) {
+      int x;
+      scanf("%d", &x);
+      insert(x);
+    } else if (strcmp(op, "delete") == 0) {
+      deleteMin();
+    } else if (strcmp(op, "peek") == 0) {
+      peek();
     }
+  }
 
-    return 0;
+  return 0;
 }

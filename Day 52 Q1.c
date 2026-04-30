@@ -1,99 +1,87 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Tree Node
+// Node structure
 struct Node {
-    int data;
-    struct Node* left;
-    struct Node* right;
+  int data;
+  struct Node *left;
+  struct Node *right;
 };
 
-// Create node
-struct Node* createNode(int val) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = val;
-    newNode->left = newNode->right = NULL;
-    return newNode;
+// create node
+struct Node *newNode(int val) {
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+  node->data = val;
+  node->left = node->right = NULL;
+  return node;
 }
 
-// Queue for level order construction
-struct Node* queue[1000];
-int front = -1, rear = -1;
+// build tree from level order
+struct Node *buildTree(int arr[], int n) {
+  if (n == 0 || arr[0] == -1)
+    return NULL;
 
-void enqueue(struct Node* node) {
-    queue[++rear] = node;
-}
+  struct Node *root = newNode(arr[0]);
 
-struct Node* dequeue() {
-    return queue[++front];
-}
+  struct Node *queue[1000];
+  int front = 0, rear = 0;
 
-int isEmpty() {
-    return front == rear;
-}
+  queue[rear++] = root;
+  int i = 1;
 
-// Build tree from level order (-1 = NULL)
-struct Node* buildTree(int arr[], int n) {
-    if (n == 0 || arr[0] == -1) return NULL;
+  while (i < n) {
+    struct Node *curr = queue[front++];
 
-    struct Node* root = createNode(arr[0]);
-    enqueue(root);
-
-    int i = 1;
-    while (!isEmpty() && i < n) {
-        struct Node* curr = dequeue();
-
-        // Left child
-        if (arr[i] != -1) {
-            curr->left = createNode(arr[i]);
-            enqueue(curr->left);
-        }
-        i++;
-
-        // Right child
-        if (i < n && arr[i] != -1) {
-            curr->right = createNode(arr[i]);
-            enqueue(curr->right);
-        }
-        i++;
+    if (i < n && arr[i] != -1) {
+      curr->left = newNode(arr[i]);
+      queue[rear++] = curr->left;
     }
-    return root;
+    i++;
+
+    if (i < n && arr[i] != -1) {
+      curr->right = newNode(arr[i]);
+      queue[rear++] = curr->right;
+    }
+    i++;
+  }
+
+  return root;
 }
 
-// LCA function (Binary Tree)
-struct Node* LCA(struct Node* root, int n1, int n2) {
-    if (root == NULL)
-        return NULL;
+// LCA in Binary Tree
+struct Node *LCA(struct Node *root, int p, int q) {
+  if (root == NULL)
+    return NULL;
 
-    if (root->data == n1 || root->data == n2)
-        return root;
+  if (root->data == p || root->data == q)
+    return root;
 
-    struct Node* left = LCA(root->left, n1, n2);
-    struct Node* right = LCA(root->right, n1, n2);
+  struct Node *left = LCA(root->left, p, q);
+  struct Node *right = LCA(root->right, p, q);
 
-    if (left && right)
-        return root;
+  if (left && right)
+    return root;
 
-    return (left != NULL) ? left : right;
+  return left ? left : right;
 }
 
 int main() {
-    int n;
-    scanf("%d", &n);
+  int n;
+  scanf("%d", &n);
 
-    int arr[n];
-    for (int i = 0; i < n; i++)
-        scanf("%d", &arr[i]);
+  int arr[n];
+  for (int i = 0; i < n; i++)
+    scanf("%d", &arr[i]);
 
-    int n1, n2;
-    scanf("%d %d", &n1, &n2);
+  struct Node *root = buildTree(arr, n);
 
-    struct Node* root = buildTree(arr, n);
+  int p, q;
+  scanf("%d %d", &p, &q);
 
-    struct Node* lca = LCA(root, n1, n2);
+  struct Node *ans = LCA(root, p, q);
 
-    if (lca != NULL)
-        printf("%d\n", lca->data);
+  if (ans)
+    printf("%d", ans->data);
 
-    return 0;
+  return 0;
 }

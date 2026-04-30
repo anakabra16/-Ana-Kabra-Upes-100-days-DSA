@@ -1,98 +1,99 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Node{
-    int data;
-    struct Node *left, *right;
+// Node structure
+struct Node {
+  int data;
+  struct Node *left;
+  struct Node *right;
 };
 
-struct Node* createNode(int data){
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->left = newNode->right = NULL;
-    return newNode;
+// create node
+struct Node *newNode(int val) {
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+  node->data = val;
+  node->left = node->right = NULL;
+  return node;
 }
 
-/* ---------- Traversals ---------- */
+// build tree from level order
+struct Node *buildTree(int arr[], int n) {
+  if (n == 0 || arr[0] == -1)
+    return NULL;
 
-void inorder(struct Node* root){
-    if(root==NULL) return;
+  struct Node *root = newNode(arr[0]);
 
-    inorder(root->left);
-    printf("%d ",root->data);
-    inorder(root->right);
-}
+  struct Node *queue[1000];
+  int front = 0, rear = 0;
 
-void preorder(struct Node* root){
-    if(root==NULL) return;
+  queue[rear++] = root;
+  int i = 1;
 
-    printf("%d ",root->data);
-    preorder(root->left);
-    preorder(root->right);
-}
+  while (i < n) {
+    struct Node *curr = queue[front++];
 
-void postorder(struct Node* root){
-    if(root==NULL) return;
-
-    postorder(root->left);
-    postorder(root->right);
-    printf("%d ",root->data);
-}
-
-/* ---------- Build Tree from Level Order ---------- */
-
-struct Node* buildTree(int arr[], int n){
-
-    if(n==0 || arr[0]==-1)
-        return NULL;
-
-    struct Node* root = createNode(arr[0]);
-
-    struct Node* queue[n];
-    int front=0, rear=0;
-
-    queue[rear++] = root;
-
-    int i=1;
-
-    while(i<n){
-
-        struct Node* current = queue[front++];
-
-        if(arr[i] != -1){
-            current->left = createNode(arr[i]);
-            queue[rear++] = current->left;
-        }
-        i++;
-
-        if(i<n && arr[i] != -1){
-            current->right = createNode(arr[i]);
-            queue[rear++] = current->right;
-        }
-        i++;
+    // left child
+    if (i < n && arr[i] != -1) {
+      curr->left = newNode(arr[i]);
+      queue[rear++] = curr->left;
     }
+    i++;
 
-    return root;
+    // right child
+    if (i < n && arr[i] != -1) {
+      curr->right = newNode(arr[i]);
+      queue[rear++] = curr->right;
+    }
+    i++;
+  }
+
+  return root;
 }
 
-int main(){
+// inorder
+void inorder(struct Node *root) {
+  if (root == NULL)
+    return;
+  inorder(root->left);
+  printf("%d ", root->data);
+  inorder(root->right);
+}
 
-    int n;
-    scanf("%d",&n);
+// preorder
+void preorder(struct Node *root) {
+  if (root == NULL)
+    return;
+  printf("%d ", root->data);
+  preorder(root->left);
+  preorder(root->right);
+}
 
-    int arr[n];
-    for(int i=0;i<n;i++)
-        scanf("%d",&arr[i]);
+// postorder
+void postorder(struct Node *root) {
+  if (root == NULL)
+    return;
+  postorder(root->left);
+  postorder(root->right);
+  printf("%d ", root->data);
+}
 
-    struct Node* root = buildTree(arr,n);
+int main() {
+  int n;
+  scanf("%d", &n);
 
-    inorder(root);
-    printf("\n");
+  int arr[n];
+  for (int i = 0; i < n; i++)
+    scanf("%d", &arr[i]);
 
-    preorder(root);
-    printf("\n");
+  struct Node *root = buildTree(arr, n);
 
-    postorder(root);
+  inorder(root);
+  printf("\n");
 
-    return 0;
+  preorder(root);
+  printf("\n");
+
+  postorder(root);
+
+  return 0;
 }

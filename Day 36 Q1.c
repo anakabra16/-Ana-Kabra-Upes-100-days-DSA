@@ -1,67 +1,50 @@
 #include <stdio.h>
-
-#define MAX 100
-
-int queue[MAX];
-int front = -1, rear = -1;
-
-void enqueue(int x) {
-
-    if((rear + 1) % MAX == front)
-        return;
-
-    if(front == -1)
-        front = 0;
-
-    rear = (rear + 1) % MAX;
-    queue[rear] = x;
-}
-
-int dequeue() {
-
-    int value = queue[front];
-
-    if(front == rear)
-        front = rear = -1;
-    else
-        front = (front + 1) % MAX;
-
-    return value;
-}
-
-void display() {
-
-    int i = front;
-
-    while(1) {
-        printf("%d ", queue[i]);
-
-        if(i == rear)
-            break;
-
-        i = (i + 1) % MAX;
-    }
-}
+#include <stdlib.h>
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, m, x;
+  int *q = (int *)malloc(sizeof(int) * n);
 
-    scanf("%d", &n);
+  int front = 0, rear = -1;
 
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        enqueue(x);
-    }
+  // read input values
+  int *arr = (int *)malloc(sizeof(int) * n);
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &arr[i]);
+  }
 
-    scanf("%d", &m);
+  // enqueue all n elements
+  for (int i = 0; i < n; i++) {
+    rear = (rear + 1) % n;
+    q[rear] = arr[i];
+  }
 
-    for(int i = 0; i < m; i++) {
-        int temp = dequeue();
-        enqueue(temp);
-    }
+  int m;
+  scanf("%d", &m);
 
-    display();
+  // dequeue m elements
+  for (int i = 0; i < m; i++) {
+    front = (front + 1) % n;
+  }
 
-    return 0;
+  // enqueue first m elements again (wrap-around effect)
+  for (int i = 0; i < m; i++) {
+    rear = (rear + 1) % n;
+    q[rear] = arr[i];
+  }
+
+  // display circular queue
+  int i = front;
+  while (1) {
+    printf("%d ", q[i]);
+    if (i == rear)
+      break;
+    i = (i + 1) % n;
+  }
+
+  free(q);
+  free(arr);
+  return 0;
 }

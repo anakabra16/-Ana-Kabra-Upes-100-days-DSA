@@ -1,75 +1,86 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_VERTICES 1000
+#define MAX 100
 
+// Node structure
 struct Node {
-    int data;
-    struct Node* next;
+  int vertex;
+  struct Node *next;
 };
 
-struct Node* adj[MAX_VERTICES];
-int visited[MAX_VERTICES];
-int stack[MAX_VERTICES];
-int top = -1;
+// Graph
+struct Graph {
+  int V;
+  struct Node *adj[MAX];
+};
 
-void push(int val) {
-    stack[++top] = val;
+// create node
+struct Node *createNode(int v) {
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+  node->vertex = v;
+  node->next = NULL;
+  return node;
 }
 
-int pop() {
-    return stack[top--];
+// add edge (DIRECTED)
+void addEdge(struct Graph *graph, int u, int v) {
+  struct Node *node = createNode(v);
+  node->next = graph->adj[u];
+  graph->adj[u] = node;
 }
 
-void addEdge(int u, int v) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = v;
-    newNode->next = adj[u];
-    adj[u] = newNode;
-}
+// DFS topo
+void dfsTopo(struct Graph *graph, int v, int visited[], int stack[], int *top) {
+  visited[v] = 1;
 
-void dfs(int node) {
-    visited[node] = 1;
+  struct Node *temp = graph->adj[v];
 
-    struct Node* temp = adj[node];
-    while (temp != NULL) {
-        int neighbor = temp->data;
-        if (!visited[neighbor]) {
-            dfs(neighbor);
-        }
-        temp = temp->next;
+  while (temp) {
+    if (!visited[temp->vertex]) {
+      dfsTopo(graph, temp->vertex, visited, stack, top);
     }
+    temp = temp->next;
+  }
 
-    // Push vertex to stack only after all its adjacent vertices are visited
-    push(node);
+  stack[(*top)++] = v; // push after recursion
+}
+
+// topological sort
+void topoSort(struct Graph *graph) {
+  int visited[MAX] = {0};
+  int stack[MAX];
+  int top = 0;
+
+  for (int i = 0; i < graph->V; i++) {
+    if (!visited[i]) {
+      dfsTopo(graph, i, visited, stack, &top);
+    }
+  }
+
+  // print in reverse order
+  for (int i = top - 1; i >= 0; i--) {
+    printf("%d ", stack[i]);
+  }
 }
 
 int main() {
-    int V, E;
-    if (scanf("%d %d", &V, &E) != 2) return 0;
+  int n, m;
+  scanf("%d %d", &n, &m);
 
-    for (int i = 0; i < V; i++) {
-        adj[i] = NULL;
-        visited[i] = 0;
-    }
+  struct Graph graph;
+  graph.V = n;
 
-    for (int i = 0; i < E; i++) {
-        int u, v;
-        scanf("%d %d", &u, &v);
-        addEdge(u, v);
-    }
+  for (int i = 0; i < n; i++)
+    graph.adj[i] = NULL;
 
-    for (int i = 0; i < V; i++) {
-        if (!visited[i]) {
-            dfs(i);
-        }
-    }
+  for (int i = 0; i < m; i++) {
+    int u, v;
+    scanf("%d %d", &u, &v);
+    addEdge(&graph, u, v);
+  }
 
-    // Print the topological sort
-    while (top != -1) {
-        printf("%d ", pop());
-    }
-    printf("\n");
+  topoSort(&graph);
 
-    return 0;
+  return 0;
 }

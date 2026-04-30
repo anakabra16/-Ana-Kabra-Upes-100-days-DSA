@@ -1,25 +1,28 @@
 #include <stdlib.h>
 
-int leastInterval(char* tasks, int tasksSize, int n) {
+int leastInterval(char *tasks, int tasksSize, int n) {
 
-    int freq[26] = {0};
+  int freq[26] = {0};
 
-    for(int i = 0; i < tasksSize; i++)
-        freq[tasks[i] - 'A']++;
+  // count frequency
+  for (int i = 0; i < tasksSize; i++)
+    freq[tasks[i] - 'A']++;
 
-    int maxFreq = 0;
+  // find max frequency
+  int maxFreq = 0;
+  for (int i = 0; i < 26; i++)
+    if (freq[i] > maxFreq)
+      maxFreq = freq[i];
 
-    for(int i = 0; i < 26; i++)
-        if(freq[i] > maxFreq)
-            maxFreq = freq[i];
+  // count how many have max frequency
+  int countMax = 0;
+  for (int i = 0; i < 26; i++)
+    if (freq[i] == maxFreq)
+      countMax++;
 
-    int maxCount = 0;
+  int partCount = maxFreq - 1;
+  int partLength = n + 1;
+  int result = partCount * partLength + countMax;
 
-    for(int i = 0; i < 26; i++)
-        if(freq[i] == maxFreq)
-            maxCount++;
-
-    int intervals = (maxFreq - 1) * (n + 1) + maxCount;
-
-    return intervals > tasksSize ? intervals : tasksSize;
+  return (result > tasksSize) ? result : tasksSize;
 }

@@ -1,67 +1,94 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#define MAX 1000
+#define MAX 100
 
-// Adjacency list
-int adj[MAX][MAX];
-int adjSize[MAX];
-int visited[MAX];
-int recStack[MAX];
+// Node structure
+struct Node {
+  int vertex;
+  struct Node *next;
+};
 
-// DFS with recursion stack to detect cycle in directed graph
-int dfs(int node) {
-    visited[node] = 1;
-    recStack[node] = 1;
+// Graph
+struct Graph {
+  int V;
+  struct Node *adj[MAX];
+};
 
-    for (int i = 0; i < adjSize[node]; i++) {
-        int neighbor = adj[node][i];
+// create node
+struct Node *createNode(int v) {
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+  node->vertex = v;
+  node->next = NULL;
+  return node;
+}
 
-        if (!visited[neighbor]) {
-            if (dfs(neighbor))
-                return 1;
-        } else if (recStack[neighbor]) {
-            // Node is in current recursion stack = cycle
-            return 1;
-        }
+// add edge (DIRECTED)
+void addEdge(struct Graph *graph, int u, int v) {
+  struct Node *node = createNode(v);
+  node->next = graph->adj[u];
+  graph->adj[u] = node;
+}
+
+// DFS cycle detection
+int dfs(struct Graph *graph, int v, int visited[], int recStack[]) {
+  visited[v] = 1;
+  recStack[v] = 1;
+
+  struct Node *temp = graph->adj[v];
+
+  while (temp) {
+    int neighbor = temp->vertex;
+
+    if (!visited[neighbor]) {
+      if (dfs(graph, neighbor, visited, recStack))
+        return 1;
+    } else if (recStack[neighbor]) {
+      return 1; // cycle found
     }
 
-    recStack[node] = 0;
-    return 0;
+    temp = temp->next;
+  }
+
+  recStack[v] = 0; // backtrack
+  return 0;
+}
+
+// check cycle
+int hasCycle(struct Graph *graph) {
+  int visited[MAX] = {0};
+  int recStack[MAX] = {0};
+
+  for (int i = 0; i < graph->V; i++) {
+    if (!visited[i]) {
+      if (dfs(graph, i, visited, recStack))
+        return 1;
+    }
+  }
+
+  return 0;
 }
 
 int main() {
-    int n, e;
-    scanf("%d %d", &n, &e);
+  int n, m;
+  scanf("%d %d", &n, &m);
 
-    // Initialize
-    for (int i = 0; i < n; i++) {
-        adjSize[i] = 0;
-        visited[i] = 0;
-        recStack[i] = 0;
-    }
+  struct Graph graph;
+  graph.V = n;
 
-    // Read directed edges (u -> v)
-    for (int i = 0; i < e; i++) {
-        int u, v;
-        scanf("%d %d", &u, &v);
-        adj[u][adjSize[u]++] = v;
-    }
+  for (int i = 0; i < n; i++)
+    graph.adj[i] = NULL;
 
-    // Check all nodes (for disconnected components)
-    int hasCycle = 0;
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            if (dfs(i)) {
-                hasCycle = 1;
-                break;
-            }
-        }
-    }
+  for (int i = 0; i < m; i++) {
+    int u, v;
+    scanf("%d %d", &u, &v);
+    addEdge(&graph, u, v);
+  }
 
-    if (hasCycle)
-        printf("YES");
-    else
-        printf("NO");
+  if (hasCycle(&graph))
+    printf("YES");
+  else
+    printf("NO");
 
-    return 0;
+  return 0;
 }

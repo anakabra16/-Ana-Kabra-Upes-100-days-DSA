@@ -1,142 +1,166 @@
 #include <stdio.h>
-#define MAX 100
+#include <stdlib.h>
 
-int deque[MAX];
-int front = -1, rear = -1;
+// node structure
+struct Node {
+  int data;
+  struct Node *prev;
+  struct Node *next;
+};
 
-int empty() {
-    return front == -1;
+struct Node *front = NULL, *rear = NULL;
+int sz = 0;
+
+// push front
+void push_front(int val) {
+  struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+  newNode->data = val;
+  newNode->prev = NULL;
+  newNode->next = front;
+
+  if (front != NULL)
+    front->prev = newNode;
+  else
+    rear = newNode;
+
+  front = newNode;
+  sz++;
 }
 
-int size() {
-    if(front == -1) return 0;
-    return rear - front + 1;
+// push back
+void push_back(int val) {
+  struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+  newNode->data = val;
+  newNode->next = NULL;
+  newNode->prev = rear;
+
+  if (rear != NULL)
+    rear->next = newNode;
+  else
+    front = newNode;
+
+  rear = newNode;
+  sz++;
 }
 
-void push_front(int x) {
-    if(front == 0) {
-        printf("Deque Overflow\n");
-        return;
-    }
-    if(front == -1) {
-        front = rear = 0;
-    } else {
-        front--;
-    }
-    deque[front] = x;
-}
-
-void push_back(int x) {
-    if(rear == MAX - 1) {
-        printf("Deque Overflow\n");
-        return;
-    }
-    if(front == -1) {
-        front = rear = 0;
-    } else {
-        rear++;
-    }
-    deque[rear] = x;
-}
-
+// pop front
 void pop_front() {
-    if(empty()) {
-        printf("Deque Underflow\n");
-        return;
-    }
-    if(front == rear) {
-        front = rear = -1;
-    } else {
-        front++;
-    }
+  if (front == NULL) {
+    printf("Deque is empty\n");
+    return;
+  }
+
+  struct Node *temp = front;
+  front = front->next;
+
+  if (front != NULL)
+    front->prev = NULL;
+  else
+    rear = NULL;
+
+  free(temp);
+  sz--;
 }
 
+// pop back
 void pop_back() {
-    if(empty()) {
-        printf("Deque Underflow\n");
-        return;
-    }
-    if(front == rear) {
-        front = rear = -1;
-    } else {
-        rear--;
-    }
+  if (rear == NULL) {
+    printf("Deque is empty\n");
+    return;
+  }
+
+  struct Node *temp = rear;
+  rear = rear->prev;
+
+  if (rear != NULL)
+    rear->next = NULL;
+  else
+    front = NULL;
+
+  free(temp);
+  sz--;
 }
 
-int get_front() {
-    if(empty()) return -1;
-    return deque[front];
+// front element
+void getFront() {
+  if (front == NULL)
+    printf("-1\n");
+  else
+    printf("%d\n", front->data);
 }
 
-int get_back() {
-    if(empty()) return -1;
-    return deque[rear];
+// back element
+void getBack() {
+  if (rear == NULL)
+    printf("-1\n");
+  else
+    printf("%d\n", rear->data);
 }
 
-void clear() {
-    front = rear = -1;
-}
+// empty
+void isEmpty() { printf("%s\n", (sz == 0) ? "true" : "false"); }
 
-void reverse() {
-    int i = front, j = rear;
-    while(i < j) {
-        int temp = deque[i];
-        deque[i] = deque[j];
-        deque[j] = temp;
-        i++;
-        j--;
-    }
-}
+// size
+void size() { printf("%d\n", sz); }
 
-void sort() {
-    for(int i = front; i <= rear; i++) {
-        for(int j = i + 1; j <= rear; j++) {
-            if(deque[i] > deque[j]) {
-                int temp = deque[i];
-                deque[i] = deque[j];
-                deque[j] = temp;
-            }
-        }
-    }
-}
-
+// display
 void display() {
-    if(empty()) {
-        printf("Deque is empty\n");
-        return;
-    }
-    for(int i = front; i <= rear; i++) {
-        printf("%d ", deque[i]);
-    }
-    printf("\n");
+  struct Node *temp = front;
+  while (temp != NULL) {
+    printf("%d ", temp->data);
+    temp = temp->next;
+  }
+  printf("\n");
 }
 
-int main() {
-
-    push_back(10);
-    push_back(20);
-    push_front(5);
-    push_back(30);
-
-    display();
-
-    printf("Front: %d\n", get_front());
-    printf("Back: %d\n", get_back());
-    printf("Size: %d\n", size());
-
+// clear
+void clear() {
+  while (front != NULL)
     pop_front();
-    pop_back();
+}
 
-    display();
+// reverse
+void reverse() {
+  struct Node *curr = front;
+  struct Node *temp = NULL;
 
-    reverse();
-    display();
+  while (curr != NULL) {
+    temp = curr->prev;
+    curr->prev = curr->next;
+    curr->next = temp;
+    curr = curr->prev;
+  }
 
-    sort();
-    display();
+  if (temp != NULL)
+    front = temp->prev;
 
-    clear();
-    display();
+  // swap front & rear
+  temp = front;
+  front = rear;
+  rear = temp;
+}
 
-    return 0;
+// main (sample usage)
+int main() {
+  push_back(10);
+  push_back(20);
+  push_front(5);
+  display(); // 5 10 20
+
+  pop_front();
+  display(); // 10 20
+
+  getFront(); // 10
+  getBack();  // 20
+
+  size();    // 2
+  isEmpty(); // false
+
+  reverse();
+  display(); // 20 10
+
+  clear();
+  isEmpty(); // true
+
+  return 0;
 }

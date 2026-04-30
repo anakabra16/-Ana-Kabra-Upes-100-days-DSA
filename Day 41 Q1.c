@@ -2,65 +2,62 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Node structure
 struct Node {
-    int data;
-    struct Node* next;
+  int data;
+  struct Node *next;
 };
 
 struct Node *front = NULL, *rear = NULL;
 
+// enqueue
 void enqueue(int x) {
-    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
-    temp->data = x;
-    temp->next = NULL;
+  struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+  newNode->data = x;
+  newNode->next = NULL;
 
-    if(rear == NULL) {
-        front = rear = temp;
-        return;
-    }
-
-    rear->next = temp;
-    rear = temp;
+  if (rear == NULL) {
+    front = rear = newNode;
+  } else {
+    rear->next = newNode;
+    rear = newNode;
+  }
 }
 
+// dequeue
 void dequeue() {
+  if (front == NULL) {
+    printf("-1\n");
+    return;
+  }
 
-    if(front == NULL) {
-        printf("-1\n");
-        return;
-    }
+  struct Node *temp = front;
+  printf("%d\n", temp->data);
 
-    struct Node* temp = front;
+  front = front->next;
 
-    printf("%d\n", front->data);
+  if (front == NULL)
+    rear = NULL;
 
-    front = front->next;
-
-    if(front == NULL)
-        rear = NULL;
-
-    free(temp);
+  free(temp);
 }
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, x;
+  while (n--) {
     char op[20];
+    scanf("%s", op);
 
-    scanf("%d", &n);
-
-    for(int i=0;i<n;i++) {
-
-        scanf("%s", op);
-
-        if(strcmp(op,"enqueue")==0) {
-            scanf("%d",&x);
-            enqueue(x);
-        }
-        else if(strcmp(op,"dequeue")==0) {
-            dequeue();
-        }
+    if (strcmp(op, "enqueue") == 0) {
+      int x;
+      scanf("%d", &x);
+      enqueue(x);
+    } else if (strcmp(op, "dequeue") == 0) {
+      dequeue();
     }
+  }
 
-    return 0;
+  return 0;
 }

@@ -1,74 +1,100 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_VERTICES 1000
+#define MAX 100
 
+// Node structure
 struct Node {
-    int data;
-    struct Node* next;
+  int vertex;
+  struct Node *next;
 };
 
-struct Node* adj[MAX_VERTICES];
-int inDegree[MAX_VERTICES];
+// Graph
+struct Graph {
+  int V;
+  struct Node *adj[MAX];
+};
 
-void addEdge(int u, int v) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = v;
-    newNode->next = adj[u];
-    adj[u] = newNode;
-    inDegree[v]++;
+// create node
+struct Node *createNode(int v) {
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+  node->vertex = v;
+  node->next = NULL;
+  return node;
+}
+
+// add edge (DIRECTED)
+void addEdge(struct Graph *graph, int u, int v) {
+  struct Node *node = createNode(v);
+  node->next = graph->adj[u];
+  graph->adj[u] = node;
+}
+
+// Kahn's Algorithm
+void topoSort(struct Graph *graph) {
+  int indegree[MAX] = {0};
+
+  // calculate indegree
+  for (int i = 0; i < graph->V; i++) {
+    struct Node *temp = graph->adj[i];
+    while (temp) {
+      indegree[temp->vertex]++;
+      temp = temp->next;
+    }
+  }
+
+  // queue
+  int queue[MAX];
+  int front = 0, rear = 0;
+
+  // push nodes with indegree 0
+  for (int i = 0; i < graph->V; i++) {
+    if (indegree[i] == 0)
+      queue[rear++] = i;
+  }
+
+  int count = 0;
+
+  while (front < rear) {
+    int curr = queue[front++];
+    printf("%d ", curr);
+    count++;
+
+    struct Node *temp = graph->adj[curr];
+
+    while (temp) {
+      indegree[temp->vertex]--;
+
+      if (indegree[temp->vertex] == 0)
+        queue[rear++] = temp->vertex;
+
+      temp = temp->next;
+    }
+  }
+
+  // cycle check
+  if (count != graph->V) {
+    printf("\nCycle detected → Topological sort not possible");
+  }
 }
 
 int main() {
-    int V, E;
-    if (scanf("%d %d", &V, &E) != 2) return 0;
+  int n, m;
+  scanf("%d %d", &n, &m);
 
-    for (int i = 0; i < V; i++) {
-        adj[i] = NULL;
-        inDegree[i] = 0;
-    }
+  struct Graph graph;
+  graph.V = n;
 
-    for (int i = 0; i < E; i++) {
-        int u, v;
-        scanf("%d %d", &u, &v);
-        addEdge(u, v);
-    }
+  for (int i = 0; i < n; i++)
+    graph.adj[i] = NULL;
 
-    int queue[MAX_VERTICES];
-    int front = 0, rear = 0;
+  for (int i = 0; i < m; i++) {
+    int u, v;
+    scanf("%d %d", &u, &v);
+    addEdge(&graph, u, v);
+  }
 
-    // Enqueue all vertices with in-degree 0
-    for (int i = 0; i < V; i++) {
-        if (inDegree[i] == 0) {
-            queue[rear++] = i;
-        }
-    }
+  topoSort(&graph);
 
-    int count = 0;
-    // Process queue
-    while (front < rear) {
-        int curr = queue[front++];
-        printf("%d ", curr);
-        count++;
-
-        // Decrease in-degree of all adjacent vertices
-        struct Node* temp = adj[curr];
-        while (temp != NULL) {
-            int neighbor = temp->data;
-            inDegree[neighbor]--;
-            // If in-degree becomes 0, enqueue it
-            if (inDegree[neighbor] == 0) {
-                queue[rear++] = neighbor;
-            }
-            temp = temp->next;
-        }
-    }
-    printf("\n");
-
-    // Check if there was a cycle
-    if (count != V) {
-        printf("Cycle detected! Topological sort is not possible for graphs with cycles.\n");
-    }
-
-    return 0;
+  return 0;
 }

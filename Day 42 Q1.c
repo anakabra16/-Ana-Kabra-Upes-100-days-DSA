@@ -4,54 +4,51 @@
 
 int queue[MAX];
 int stack[MAX];
+
 int front = 0, rear = -1;
 int top = -1;
 
-void enqueue(int x) {
-    queue[++rear] = x;
-}
+// enqueue
+void enqueue(int x) { queue[++rear] = x; }
 
-int dequeue() {
-    return queue[front++];
-}
+// dequeue
+int dequeue() { return queue[front++]; }
 
-void push(int x) {
-    stack[++top] = x;
-}
+// push stack
+void push(int x) { stack[++top] = x; }
 
-int pop() {
-    return stack[top--];
-}
+// pop stack
+int pop() { return stack[top--]; }
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, x;
+  // input queue
+  for (int i = 0; i < n; i++) {
+    int x;
+    scanf("%d", &x);
+    enqueue(x);
+  }
 
-    scanf("%d", &n);
+  // step 1: move queue → stack
+  while (front <= rear) {
+    push(dequeue());
+  }
 
-    // read queue elements
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        enqueue(x);
-    }
+  // reset queue
+  front = 0;
+  rear = -1;
 
-    // move queue to stack
-    while(front <= rear) {
-        push(dequeue());
-    }
+  // step 2: move stack → queue
+  while (top != -1) {
+    enqueue(pop());
+  }
 
-    // move stack back to queue
-    front = 0;
-    rear = -1;
+  // print reversed queue
+  for (int i = front; i <= rear; i++) {
+    printf("%d ", queue[i]);
+  }
 
-    while(top >= 0) {
-        enqueue(pop());
-    }
-
-    // print reversed queue
-    for(int i = front; i <= rear; i++) {
-        printf("%d ", queue[i]);
-    }
-
-    return 0;
+  return 0;
 }

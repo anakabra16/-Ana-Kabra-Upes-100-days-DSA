@@ -1,67 +1,69 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
+
+// Node for stack
 struct Node {
-    int data;
-    struct Node* next;
+  int data;
+  struct Node *next;
 };
 
-struct Node* top = NULL;
-
-void push(int x) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = x;
-    newNode->next = top;
-    top = newNode;
+// push
+void push(struct Node **top, int val) {
+  struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+  newNode->data = val;
+  newNode->next = *top;
+  *top = newNode;
 }
 
-int pop() {
-    if(top == NULL) {
-        printf("Stack Underflow\n");
-        exit(1);
-    }
-    struct Node* temp = top;
-    int value = temp->data;
-    top = top->next;
-    free(temp);
-    return value;
+// pop
+int pop(struct Node **top) {
+  if (*top == NULL)
+    return 0;
+
+  struct Node *temp = *top;
+  int val = temp->data;
+  *top = temp->next;
+  free(temp);
+  return val;
 }
 
 int main() {
-    char expr[100];
-    char *token;
+  char exp[100];
+  fgets(exp, sizeof(exp), stdin);
 
-    printf("Enter postfix expression: ");
-    fgets(expr, sizeof(expr), stdin);
+  struct Node *stack = NULL;
 
-    token = strtok(expr, " \n");
+  char *token = strtok(exp, " \n");
 
-    while(token != NULL) {
+  while (token != NULL) {
 
-        if(isdigit(token[0]) || 
-           (token[0]=='-' && isdigit(token[1]))) {
-            push(atoi(token));
-        }
-        else {
-            int b = pop();
-            int a = pop();
+    // if number
+    if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
+      push(&stack, atoi(token));
+    } else {
+      int b = pop(&stack);
+      int a = pop(&stack);
+      int result;
 
-            if(strcmp(token, "+") == 0)
-                push(a + b);
-            else if(strcmp(token, "-") == 0)
-                push(a - b);
-            else if(strcmp(token, "*") == 0)
-                push(a * b);
-            else if(strcmp(token, "/") == 0)
-                push(a / b);
-        }
+      if (strcmp(token, "+") == 0)
+        result = a + b;
+      else if (strcmp(token, "-") == 0)
+        result = a - b;
+      else if (strcmp(token, "*") == 0)
+        result = a * b;
+      else
+        result = a / b;
 
-        token = strtok(NULL, " \n");
+      push(&stack, result);
     }
 
-    printf("Result = %d\n", pop());
+    token = strtok(NULL, " \n");
+  }
 
-    return 0;
+  printf("%d\n", pop(&stack));
+
+  return 0;
 }

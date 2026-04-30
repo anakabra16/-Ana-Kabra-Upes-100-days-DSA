@@ -1,49 +1,29 @@
-#include <stdio.h>
 #include <stdlib.h>
 
-struct Node {
-    int data;
-    struct Node *left, *right;
-};
-
-struct Node* createNode(int data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->left = newNode->right = NULL;
-    return newNode;
-}
-
-int maxDepth(struct Node* root) {
-
-    if(root == NULL)
-        return 0;
-
-    int left = maxDepth(root->left);
-    int right = maxDepth(root->right);
-
-    if(left > right)
-        return left + 1;
-    else
-        return right + 1;
-}
-
-int main() {
-
-    /* Example tree
-            3
-           / \
-          9  20
-             / \
-            15  7
-    */
-
-    struct Node* root = createNode(3);
-    root->left = createNode(9);
-    root->right = createNode(20);
-    root->right->left = createNode(15);
-    root->right->right = createNode(7);
-
-    printf("Maximum Depth: %d", maxDepth(root));
-
+int maxDepth(struct TreeNode *root) {
+  if (root == NULL)
     return 0;
+
+  struct TreeNode *queue[10000];
+  int front = 0, rear = 0;
+
+  queue[rear++] = root;
+  int depth = 0;
+
+  while (front < rear) {
+    int size = rear - front;
+
+    for (int i = 0; i < size; i++) {
+      struct TreeNode *node = queue[front++];
+
+      if (node->left)
+        queue[rear++] = node->left;
+      if (node->right)
+        queue[rear++] = node->right;
+    }
+
+    depth++;
+  }
+
+  return depth;
 }

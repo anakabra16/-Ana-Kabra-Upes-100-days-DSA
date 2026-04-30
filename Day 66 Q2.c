@@ -1,55 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
-typedef struct Node {
-    int data;
-    struct Node* next;
-} Node;
+bool canFinish(int numCourses, int **prerequisites, int prerequisitesSize,
+               int *prerequisitesColSize) {
+  // Step 1: Graph
+  int **graph = (int **)malloc(numCourses * sizeof(int *));
+  int *indegree = (int *)calloc(numCourses, sizeof(int));
+  int *sizes = (int *)calloc(numCourses, sizeof(int));
 
-bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize) {
-    Node** adj = (Node**)calloc(numCourses, sizeof(Node*));
-    int* inDegree = (int*)calloc(numCourses, sizeof(int));
-    
-    for (int i = 0; i < prerequisitesSize; i++) {
-        int ai = prerequisites[i][0];
-        int bi = prerequisites[i][1];
-        // bi must be taken before ai -> directed edge from bi to ai
-        Node* newNode = (Node*)malloc(sizeof(Node));
-        newNode->data = ai;
-        newNode->next = adj[bi];
-        adj[bi] = newNode;
-        inDegree[ai]++;
+  for (int i = 0; i < numCourses; i++) {
+    graph[i] = (int *)malloc(numCourses * sizeof(int));
+  }
+
+  // Step 2: Build graph
+  for (int i = 0; i < prerequisitesSize; i++) {
+    int a = prerequisites[i][0];
+    int b = prerequisites[i][1];
+
+    graph[b][sizes[b]++] = a;
+    indegree[a]++;
+  }
+
+  // Step 3: Queue
+  int queue[numCourses];
+  int front = 0, rear = 0;
+
+  for (int i = 0; i < numCourses; i++) {
+    if (indegree[i] == 0) {
+      queue[rear++] = i;
     }
-    
-    int* queue = (int*)malloc(numCourses * sizeof(int));
-    int front = 0, rear = 0;
-    
-    for (int i = 0; i < numCourses; i++) {
-        if (inDegree[i] == 0) {
-            queue[rear++] = i;
-        }
+  }
+
+  int count = 0;
+
+  // Step 4: BFS
+  while (front < rear) {
+    int node = queue[front++];
+    count++;
+
+    for (int i = 0; i < sizes[node]; i++) {
+      int neighbor = graph[node][i];
+      indegree[neighbor]--;
+
+      if (indegree[neighbor] == 0) {
+        queue[rear++] = neighbor;
+      }
     }
-    
-    int count = 0;
-    while (front < rear) {
-        int curr = queue[front++];
-        count++;
-        
-        Node* temp = adj[curr];
-        while (temp != NULL) {
-            int neighbor = temp->data;
-            inDegree[neighbor]--;
-            if (inDegree[neighbor] == 0) {
-                queue[rear++] = neighbor;
-            }
-            temp = temp->next;
-        }
-    }
-    
-    free(adj);
-    free(inDegree);
-    free(queue);
-    
-    return count == numCourses;
+  }
+
+  // Step 5: Check
+  return count == numCourses;
 }

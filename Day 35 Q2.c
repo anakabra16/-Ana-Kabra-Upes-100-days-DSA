@@ -1,52 +1,51 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
-#define MAX 100
 
-int stack1[MAX], stack2[MAX];
-int top1 = -1, top2 = -1;
+#define MAX 1000
 
-void push(int x) {
-    stack1[++top1] = x;
+typedef struct {
+  int s1[MAX];
+  int s2[MAX];
+  int top1;
+  int top2;
+} MyQueue;
+
+// create queue
+MyQueue *myQueueCreate() {
+  MyQueue *obj = (MyQueue *)malloc(sizeof(MyQueue));
+  obj->top1 = -1;
+  obj->top2 = -1;
+  return obj;
 }
 
-void transfer() {
-    while(top1 >= 0) {
-        stack2[++top2] = stack1[top1--];
-    }
+// push
+void myQueuePush(MyQueue *obj, int x) { obj->s1[++obj->top1] = x; }
+
+// helper: move s1 → s2
+void transfer(MyQueue *obj) {
+  while (obj->top1 != -1) {
+    obj->s2[++obj->top2] = obj->s1[obj->top1--];
+  }
 }
 
-int pop() {
-    if(top2 == -1) {
-        transfer();
-    }
-    return stack2[top2--];
+// pop
+int myQueuePop(MyQueue *obj) {
+  if (obj->top2 == -1)
+    transfer(obj);
+
+  return obj->s2[obj->top2--];
 }
 
-int peek() {
-    if(top2 == -1) {
-        transfer();
-    }
-    return stack2[top2];
+// peek
+int myQueuePeek(MyQueue *obj) {
+  if (obj->top2 == -1)
+    transfer(obj);
+
+  return obj->s2[obj->top2];
 }
 
-bool empty() {
-    return (top1 == -1 && top2 == -1);
-}
+// empty
+bool myQueueEmpty(MyQueue *obj) { return (obj->top1 == -1 && obj->top2 == -1); }
 
-int main() {
-
-    push(1);
-    push(2);
-
-    printf("Peek: %d\n", peek());
-    printf("Pop: %d\n", pop());
-
-    if(empty())
-        printf("Queue is empty\n");
-    else
-        printf("Queue is not empty\n");
-
-    return 0;
-}
+void myQueueFree(MyQueue *obj) { free(obj); }

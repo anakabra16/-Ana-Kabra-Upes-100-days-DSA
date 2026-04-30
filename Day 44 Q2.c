@@ -1,45 +1,18 @@
-#include <stdio.h>
 #include <stdlib.h>
 
-struct Node {
-    int data;
-    struct Node* left;
-    struct Node* right;
-};
+void dfs(struct TreeNode *root, int *result, int *returnSize) {
+  if (root == NULL)
+    return;
 
-struct Node* createNode(int data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->left = NULL;
-    newNode->right = NULL;
-    return newNode;
+  result[(*returnSize)++] = root->val;  // Root
+  dfs(root->left, result, returnSize);  // Left
+  dfs(root->right, result, returnSize); // Right
 }
 
-void preorder(struct Node* root) {
-    if(root == NULL)
-        return;
+int *preorderTraversal(struct TreeNode *root, int *returnSize) {
+  int *result = (int *)malloc(sizeof(int) * 100);
+  *returnSize = 0;
 
-    printf("%d ", root->data);
-    preorder(root->left);
-    preorder(root->right);
-}
-
-int main() {
-
-    /* Example Tree
-           1
-            \
-             2
-            /
-           3
-    */
-
-    struct Node* root = createNode(1);
-    root->right = createNode(2);
-    root->right->left = createNode(3);
-
-    printf("Preorder Traversal:\n");
-    preorder(root);
-
-    return 0;
+  dfs(root, result, returnSize);
+  return result;
 }

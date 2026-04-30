@@ -1,48 +1,39 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-struct Node {
-    int data;
-    struct Node* next;
-};
+#define MAX 100
 
-struct Node* front = NULL;
-struct Node* rear = NULL;
+int queue[MAX];
+int front = 0, rear = -1;
 
-void enqueue(int x) {
-    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
-    temp->data = x;
-    temp->next = NULL;
-
-    if(rear == NULL) {
-        front = rear = temp;
-    } else {
-        rear->next = temp;
-        rear = temp;
-    }
+// enqueue
+void enqueue(int val) {
+  if (rear == MAX - 1) {
+    printf("Queue Overflow\n");
+    return;
+  }
+  queue[++rear] = val;
 }
 
+// display
 void display() {
-    struct Node* temp = front;
-
-    while(temp != NULL) {
-        printf("%d ", temp->data);
-        temp = temp->next;
-    }
+  for (int i = front; i <= rear; i++) {
+    printf("%d ", queue[i]);
+  }
 }
 
 int main() {
+  int n;
+  scanf("%d", &n);
 
-    int n, x;
+  // insert elements
+  for (int i = 0; i < n; i++) {
+    int val;
+    scanf("%d", &val);
+    enqueue(val);
+  }
 
-    scanf("%d", &n);
+  // display queue
+  display();
 
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        enqueue(x);
-    }
-
-    display();
-
-    return 0;
+  return 0;
 }
